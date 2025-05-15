@@ -7,10 +7,6 @@ const Home = () => {
   return (
     // 여기서 h-screen은 매번 기입을 해야하는건가?
     <div className="flex flex-col items-center justify-center">
-      <button onClick={() => setActive(!isActive)}>
-        {isActive ? "접기" : "열기"}
-      </button>
-
       <div
         className={`w-full transition-all duration-300 ease-in-out
           ${
@@ -32,6 +28,9 @@ const Home = () => {
           </button>
         </form>
       </div>
+      <button onClick={() => setActive(!isActive)}>
+        {isActive ? "접기" : "열기"}
+      </button>
       <div className="h-screen w-full bg-gray-200">tabel</div>
     </div>
   );
