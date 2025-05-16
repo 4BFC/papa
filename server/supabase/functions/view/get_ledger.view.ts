@@ -12,7 +12,8 @@ const get_ledger_view = async (req: Request) => {
     try {
       const { data, error } = await supabase.handleGetAll(req);
       console.log("Fetched data:", data);
-      return new Response(JSON.stringify({ data }), {
+      return new Response(JSON.stringify({ data, error }), {
+        status: 200,
         headers: { "Content-Type": "application/json" },
       });
     } catch (error) {
@@ -25,6 +26,7 @@ const get_ledger_view = async (req: Request) => {
   }
 
   // GET이 아닌 다른 메서드 처리
+  console.log("GET 요청된 URL path:", url.pathname);
   return new Response(JSON.stringify({ error: "Method not allowed" }), {
     status: 405,
     headers: { "Content-Type": "application/json" },
