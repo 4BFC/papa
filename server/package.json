@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "start": "npx supabase start",
+    "new:function": "npx supabase functions new",
+    "serve:pro": "npx supabase functions serve --no-verify-jwt --env-file .env -- api",
+    "serve:dev": "npx supabase functions serve --env-file .env -- api",
+    "deploy:function": "npx supabase functions deploy"
+  },
+  "devDependencies": {
+    "supabase": "^2.22.12"
+  }
+}
