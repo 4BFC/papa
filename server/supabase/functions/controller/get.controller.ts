@@ -8,12 +8,8 @@ class get_controller {
   }
 
   async handleGetAll(req: Request) {
-    try {
-      const { data, error } = await this.model.getAll();
-      return { data, error };
-    } catch (error) {
-      return { error };
-    }
+    const { data, error } = await this.model.getAll();
+    return { data, error };
   }
 }
 
