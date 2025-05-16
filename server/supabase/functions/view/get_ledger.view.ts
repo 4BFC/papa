@@ -1,18 +1,16 @@
-import { createClient } from "jsr:@supabase/supabase-js";
+import { get_controller } from "../controller/index.ts";
 
 console.log("This is ledger function");
 
-const supabase = createClient(
-  Deno.env.get("MY_URL") ?? "",
-  Deno.env.get("MY_ANON_KEY") ?? ""
-);
+const supabase = new get_controller();
 
-Deno.serve(async (req) => {
+const get_ledger_view = async (req: Request) => {
   const url = new URL(req.url);
   /**Get인 경우 동작 */
-  if (url.pathname === "/api_ledger" && req.method === "GET") {
+  // url.pathname === "/api_ledger" &&
+  if (url.pathname === "/api/ledger" && req.method === "GET") {
     try {
-      const { data, error } = await supabase.from("ledger").select("*");
+      const { data, error } = await supabase.handleGetAll(req);
       console.log("Fetched data:", data);
       return new Response(JSON.stringify({ data }), {
         headers: { "Content-Type": "application/json" },
@@ -31,4 +29,6 @@ Deno.serve(async (req) => {
     status: 405,
     headers: { "Content-Type": "application/json" },
   });
-});
+};
+
+export default get_ledger_view;
