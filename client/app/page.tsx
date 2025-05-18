@@ -16,7 +16,7 @@ const Home = () => {
 
   return (
     // 여기서 h-screen은 매번 기입을 해야하는건가?
-    <div className="flex flex-col items-center justify-center">
+    <div className="h-screen flex flex-col items-center justify-center">
       <div className="flex justify-center items-center p-5 text-2xl font-bold">
         오늘 날짜
       </div>
@@ -110,6 +110,7 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <footer>총합</footer>
     </div>
   );
 };
