@@ -8,6 +8,7 @@ const supabase = createClient(
 interface PostTableModel {
   id: string;
   item: string;
+  count: number;
   price: number;
   type: boolean;
   //   created_at: string;
@@ -16,6 +17,7 @@ interface PostTableModel {
 
 interface ValidBody {
   item: string;
+  count: number;
   price: number;
   type: boolean;
 }
