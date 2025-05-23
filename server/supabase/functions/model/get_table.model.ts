@@ -22,6 +22,10 @@ class get_table_model {
     return await supabase.from("ledger").select("*").eq("item", item);
   }
 
+  async getByCount(count: number) {
+    return await supabase.from("ledger").select("*").eq("count", count);
+  }
+
   async getByPrice(price: number) {
     return await supabase.from("ledger").select("*").eq("price", price);
   }
