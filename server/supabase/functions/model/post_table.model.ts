@@ -6,7 +6,7 @@ const supabase = createClient(
 );
 
 interface PostTableModel {
-  user_id: string;
+  id: string;
   item: string;
   price: number;
   type: boolean;
@@ -14,8 +14,14 @@ interface PostTableModel {
   //   updated_at: string;
 }
 
+interface ValidBody {
+  item: string;
+  price: number;
+  type: boolean;
+}
+
 //유효성 검사
-function isValidBody(obj: any): obj is PostTableModel {
+function isValidBody(obj: ValidBody): obj is PostTableModel {
   return (
     typeof obj === "object" &&
     typeof obj.item === "string" &&
@@ -38,6 +44,28 @@ class post_table_model {
         .insert([body])
         .select("*");
       console.log("data check in model", data);
+
+      if (error?.code === "42501") {
+        throw new Error("RLS_POLICY_VIOLATION");
+      }
+
+      return { data, error };
+    } catch (error) {
+      return { error: error?.message ?? "Unexpected error" };
+    }
+  }
+  async put(req: Request, id: string) {
+    try {
+      const body = await req.json();
+      if (!isValidBody(body)) {
+        return { error: "Invalid body schema" };
+      }
+
+      const { data, error } = await supabase
+        .from("ledger")
+        .update([body])
+        .eq("id", id)
+        .select("*");
 
       if (error?.code === "42501") {
         throw new Error("RLS_POLICY_VIOLATION");
