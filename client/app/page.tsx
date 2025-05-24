@@ -1,10 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+
+interface FormValues {
+  item: string;
+  count: number;
+  price: number;
+}
 
 const Home = () => {
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
   const [isButtonActive, setButtonActive] = useState<boolean>(true);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>();
 
   const handleActive = ({
     handle,
@@ -12,6 +25,10 @@ const Home = () => {
     handle: Dispatch<SetStateAction<boolean>>;
   }) => {
     handle((prev) => !prev);
+  };
+
+  const onSubmit = (data: FormValues) => {
+    console.log(data);
   };
 
   return (
@@ -31,33 +48,50 @@ const Home = () => {
       >
         <form
           className="flex flex-col items-center justify-center w-full"
-          action=""
+          onSubmit={handleSubmit(onSubmit)}
         >
           <div className="flex justify-center gap-1 w-11/12">
-            {/* <div> */}
-            <input
-              className="border-1 p-1 w-full"
-              type="text"
-              name="name"
-              placeholder="상품"
-            />
-            {/* </div> */}
-            {/* <div> */}
-            <input
-              className="border-1 p-1 w-full"
-              type="text"
-              name="name"
-              placeholder="수량"
-            />
-            {/* </div> */}
-            {/* <div> */}
-            <input
-              className="border-1 p-1 w-full"
-              type="text"
-              name="name"
-              placeholder="가격"
-            />
-            {/* </div> */}
+            <div className="w-full">
+              <input
+                className="w-full p-1 border-1"
+                type="text"
+                placeholder="상품"
+                {...register("item", { required: "상품을 기입해야 합니다." })}
+              />
+              {errors.item && <span>{errors.item.message}</span>}
+            </div>
+            <div className="w-full">
+              <input
+                className="w-full p-1 border-1"
+                type="number"
+                placeholder="수량"
+                {...register("count", {
+                  required: "수량을 기입해야 합니다.",
+                  valueAsNumber: true,
+                  min: {
+                    value: 1,
+                    message: "수량은 1 이상이어야 합니다.",
+                  },
+                })}
+              />
+              {errors.count && <span>{errors.count.message}</span>}
+            </div>
+            <div className="w-full">
+              <input
+                className="w-full p-1 border-1"
+                type="number"
+                placeholder="가격"
+                {...register("price", {
+                  required: "가격을 기입해야 합니다.",
+                  valueAsNumber: true,
+                  min: {
+                    value: 100,
+                    message: "가격은 100원 이상이어야 합니다.",
+                  },
+                })}
+              />
+              {errors.price && <span>{errors.price.message}</span>}
+            </div>
           </div>
           <button
             className="bg-blue-500 text-white p-2 rounded-md mt-2"
