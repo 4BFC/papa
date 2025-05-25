@@ -1,7 +1,18 @@
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import axiosInstance from "./axiosInstance";
+import {
+  handleUnauthorized,
+  handleForbiddenError,
+  handleNotFoundError,
+  handleServerError,
+  handleNetworkError,
+  handleLogout,
+  refreshToken,
+} from "./errorHandlers";
+import { transformRequestData, transformResponseData } from "./transformers";
 
 axiosInstance.interceptors.request.use(
-  (config) => {
+  (config: AxiosRequestConfig) => {
     /**인증 토큰 추가 */
     const token = localStorage.getItem("token");
     if (token) {
@@ -18,13 +29,13 @@ axiosInstance.interceptors.request.use(
 
     return config;
   },
-  (error) => {
+  (error: AxiosError) => {
     return Promise.reject(error);
   }
 );
 
 axiosInstance.interceptors.response.use(
-  (response) => {
+  (response: AxiosResponse) => {
     /**응답 데이터 변환 */
     const transformedData = transformResponseData(response.data);
     response.data = transformedData;
@@ -37,7 +48,7 @@ axiosInstance.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
+  (error: AxiosError) => {
     /** HTTP 상태 코드별 에러 처리 */
     if (error.response) {
       switch (error.response.status) {
@@ -65,15 +76,18 @@ axiosInstance.interceptors.response.use(
     }
 
     /** 토큰 만료 처리 */
-    if (error.response?.status === 401) {
+    if (error.response?.status === 401 && error.config) {
       /**토큰 갱신 로직 */
       return refreshToken()
         .then((newToken) => {
           /** 토큰 갱신 후 요청 재시도 */
-          error.config.headers.Authorization = `Bearer ${newToken}`;
-          return axiosInstance(error.config);
+          if (error.config?.headers) {
+            error.config.headers.Authorization = `Bearer ${newToken}`;
+            return axiosInstance(error.config);
+          }
+          return Promise.reject(error);
         })
-        .catch((refreshError) => {
+        .catch((refreshError: AxiosError) => {
           /** 토큰 갱신 실패 시 로그아웃 처리 */
           handleLogout();
           return Promise.reject(refreshError);
