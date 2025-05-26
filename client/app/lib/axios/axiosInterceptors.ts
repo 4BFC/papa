@@ -37,8 +37,9 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
     /**응답 데이터 변환 */
-    const transformedData = transformResponseData(response.data);
-    response.data = transformedData;
+    if (response.data) {
+      response.data = transformResponseData(response.data);
+    }
 
     /**성능 측정 */
     const endTime = new Date().getTime();
