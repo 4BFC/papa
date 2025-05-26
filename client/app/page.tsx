@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Dispatch, ReactElement, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface FormValues {
@@ -9,7 +9,7 @@ interface FormValues {
   price: number;
 }
 
-const Home = () => {
+const Home: ReactElement = () => {
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
   const [isButtonActive, setButtonActive] = useState<boolean>(true);
 
@@ -23,11 +23,11 @@ const Home = () => {
     handle,
   }: {
     handle: Dispatch<SetStateAction<boolean>>;
-  }) => {
+  }): void => {
     handle((prev) => !prev);
   };
 
-  const onSubmit = (data: FormValues) => {
+  const onSubmit = (data: FormValues): void => {
     console.log(data);
   };
 
