@@ -9,7 +9,7 @@ import {
   handleLogout,
   refreshToken,
 } from "./errorHandlers";
-import { transformRequestData, transformResponseData } from "./transformers";
+// import { transformRequestData, transformResponseData } from "./transformers";
 
 axiosInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
@@ -22,10 +22,12 @@ axiosInstance.interceptors.request.use(
     /**요청 시작 시간 기록 (성능 측정) */
     config.metadata = { startTime: new Date().getTime() };
 
-    /**요청 데이터 변환 */
+    /**요청 데이터 변환: 현재는 불필요 */
+    /**
     if (config.data) {
       config.data = transformRequestData(config.data);
-    }
+    } 
+    */
 
     return config;
   },
@@ -36,10 +38,12 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
-    /**응답 데이터 변환 */
+    /**응답 데이터 변환: 현재는 불필요 */
+    /**
     if (response.data) {
       response.data = transformResponseData(response.data);
     }
+    */
 
     /**성능 측정 */
     const endTime = new Date().getTime();
