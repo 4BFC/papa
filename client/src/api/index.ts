@@ -1,3 +1,3 @@
-export { default as post } from "./post";
-export { default as put } from "./put";
-export { default as get } from "./get";
+export { default as post } from "./client/post";
+export { default as put } from "./client/put";
+export { default as get } from "./client/get";

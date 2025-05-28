@@ -1,4 +1,4 @@
-import { ErrorHandler, TokenRefresher } from "./types";
+import { ErrorHandler, TokenRefresher } from "@/types";
 
 export const handleUnauthorized: ErrorHandler = () => {
   // 인증 에러 처리 로직
@@ -33,6 +33,6 @@ export const handleLogout: ErrorHandler = () => {
 export const refreshToken: TokenRefresher = async () => {
   // 토큰 갱신 로직
   alert("로그인 페이지로 이동합니다.");
-  window.location.href = "/login";
+  // window.location.href = "/login";
   return "";
 };
