@@ -30,7 +30,8 @@
       "@/*": ["./src/*"],
       "@/lib/*": ["./src/lib/*"],
       "@/types/*": ["./src/types/*"],
-      "@/hook/*": ["./src/hook/*"]
+      "@/hook/*": ["./src/hook/*"],
+      "@/api/*": ["./src/api/*"]
     }
   },
   "include": [
