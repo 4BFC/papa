@@ -28,7 +28,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@/lib/*": ["./src/lib/*"]
+      "@/lib/*": ["./src/lib/*"],
+      "@/types/*": ["./src/types/*"]
     }
   },
   "include": [
