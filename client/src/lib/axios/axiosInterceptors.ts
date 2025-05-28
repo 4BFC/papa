@@ -14,9 +14,13 @@ import {
 axiosInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     /**인증 토큰 추가 */
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const TOKEN: string = process.env.NEXT_PUBLIC_MY_ANON_KEY || "";
+    // const token = localStorage.getItem("token") || TOKEN;
+    // const token = TOKEN;
+
+    console.log("🚀 Authorization header:", TOKEN);
+    if (TOKEN) {
+      config.headers.Authorization = `Bearer ${TOKEN}`;
     }
 
     /**요청 시작 시간 기록 (성능 측정) */
