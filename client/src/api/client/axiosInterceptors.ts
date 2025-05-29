@@ -17,8 +17,6 @@ axiosInstance.interceptors.request.use(
     const TOKEN: string = process.env.NEXT_PUBLIC_MY_ANON_KEY || "";
     // const token = localStorage.getItem("token") || TOKEN;
     // const token = TOKEN;
-
-    console.log("🚀 Authorization header:", TOKEN);
     if (TOKEN) {
       config.headers.Authorization = `Bearer ${TOKEN}`;
     }
