@@ -122,49 +122,57 @@ const Home: ReactElement = () => {
       <button onClick={() => handleActive({ handle: setHeaderActive })}>
         {isHeaderActive ? "열기" : "접기"}
       </button>
-      <div className="h-screen w-full bg-gray-200">
+      <div className="h-screen w-full bg-gray-200 overflow-y-auto">
         <div className="w-full">
-          {/* 헤더 */}
-          <div className="grid grid-cols-5 bg-gray-100">
+          {/* 헤더 : component로 분리 필요 */}
+          <div className="grid grid-cols-4 bg-gray-100">
             <div className="border border-gray-300 p-2">상품</div>
             <div className="border border-gray-300 p-2">수량</div>
             <div className="border border-gray-300 p-2">판매가</div>
             <div className="border border-gray-300 p-2">원가</div>
-            <div className="border border-gray-300 p-2">마진</div>
           </div>
-          {/* 데이터 행 */}
-          <div
-            className="grid grid-cols-5 bg-gray-100"
-            onClick={() => handleActive({ handle: setButtonActive })}
-          >
-            <div className="border border-gray-300 p-2">가방</div>
-            <div className="border border-gray-300 p-2">1</div>
-            <div className="border border-gray-300 p-2">1,000,000</div>
-            <div className="border border-gray-300 p-2">800,000</div>
-            <div className="border border-gray-300 p-2">200,000</div>
-          </div>
-          {/* 버튼 행 */}
-          <div className="grid grid-cols-4">
+          {/* 데이터 행 : 기능 구현 후 componet로 분리 필요 */}
+          <div>
             <div
-              className={`w-full border border-gray-300 col-span-4 flex justify-center items-center transition-all duration-300 ease-in-out ${
-                isButtonActive
-                  ? "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
-                  : "max-h-[58px] opacity-100 transform scale-y-100 origin-top p-2"
-              }`}
+              className="grid grid-cols-4 bg-gray-100"
+              onClick={() => handleActive({ handle: setButtonActive })}
             >
-              <div className="flex w-6/12 gap-4">
-                <button className="w-1/2 bg-blue-500 text-white p-2 rounded-md">
-                  수정
-                </button>
-                <button className="w-1/2 bg-red-400 text-white p-2 rounded-md">
-                  삭제
-                </button>
+              <div className="border border-gray-300 p-2">가방</div>
+              <div className="border border-gray-300 p-2">1</div>
+              <div className="border border-gray-300 p-2">1,000,000</div>
+              <div className="border border-gray-300 p-2">800,000</div>
+            </div>
+            <div
+              className="grid grid-cols-2 bg-gray-100"
+              onClick={() => handleActive({ handle: setButtonActive })}
+            >
+              <div className="border border-gray-300 p-1">이득 금액</div>
+              <div className="border border-gray-300 p-1">200,000</div>
+            </div>
+            {/* 버튼 행 */}
+            <div className="grid grid-cols-4">
+              <div
+                className={`w-full border border-gray-300 col-span-4 flex flex-col justify-center items-center transition-all duration-300 ease-in-out ${
+                  isButtonActive
+                    ? "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
+                    : "max-h-[100px] opacity-100 transform scale-y-100 origin-top p-2"
+                }`}
+              >
+                <div className="flex w-6/12 gap-4">
+                  <button className="w-1/2 bg-blue-500 text-white p-2 rounded-md">
+                    수정
+                  </button>
+                  <button className="w-1/2 bg-red-400 text-white p-2 rounded-md">
+                    삭제
+                  </button>
+                </div>
+                <div>작성일 : 2025.05.29</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <footer>총합</footer>
+      <footer>이득 총합 : 1,200,000</footer>
     </div>
   );
 };
