@@ -1,5 +1,13 @@
-export { default as post } from "./client/post";
-export { default as put } from "./client/put";
-export { default as get } from "./client/get";
+/**client */
+export { default as post } from "./client/method/post";
+export { default as put } from "./client/method/put";
+export { default as get } from "./client/method/get";
+/**axiosconfig */
+export { default as axiosInstance } from "./client/axiosInstance";
+export { default as axiosInterceptors } from "./client/axiosInterceptors";
+/**api utils */
+export { default as errorHandlers } from "./errorHandlers";
+export { default as transformers } from "./transformers";
 
-export { default as axiosServer } from "./server/axiosServer";
+/**server */
+export { default as axiosInstanceServer } from "./server/axiosInstanceServer";

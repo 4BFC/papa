@@ -31,7 +31,9 @@
       "@/lib/*": ["./src/lib/*"],
       "@/types/*": ["./src/types/*"],
       "@/hook/*": ["./src/hook/*"],
-      "@/api/*": ["./src/api/*"]
+      "@/api/*": ["./src/api/*"],
+      "@/api/client/*": ["./src/api/client/*"],
+      "@/api/server/*": ["./src/api/server/*"]
     }
   },
   "include": [

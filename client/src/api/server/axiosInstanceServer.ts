@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios";
 
-const axiosServer: AxiosInstance = axios.create({
+const axiosInstanceServer: AxiosInstance = axios.create({
   baseURL: `${process.env.MY_API}`,
   timeout: 5000,
   headers: {
@@ -9,4 +9,4 @@ const axiosServer: AxiosInstance = axios.create({
   },
 });
 
-export default axiosServer;
+export default axiosInstanceServer;
