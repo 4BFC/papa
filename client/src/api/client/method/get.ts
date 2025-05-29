@@ -1,4 +1,4 @@
-import { axiosInstance } from "@/lib";
+import { axiosInstance } from "@/api";
 
 const get = async <T>(url: string): Promise<T> => {
   try {

@@ -1,8 +1,8 @@
-import { axiosInstance } from "@/lib";
+import { axiosInstance } from "@/api";
 
-const post = async <T>(url: string, body: unknown): Promise<T> => {
+const put = async <T>(url: string, body: T): Promise<T> => {
   try {
-    const response = await axiosInstance.post<T>(url, body);
+    const response = await axiosInstance.put<T>(url, body);
     return response.data;
   } catch (error: unknown) {
     /**타입 가드 설정 */
@@ -14,4 +14,4 @@ const post = async <T>(url: string, body: unknown): Promise<T> => {
   }
 };
 
-export default post;
+export default put;
