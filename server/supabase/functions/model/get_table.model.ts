@@ -27,11 +27,17 @@ class get_table_model {
   }
 
   async getByCostPrice(costPrice: number) {
-    return await supabase.from("ledger").select("*").eq("costPrice", costPrice);
+    return await supabase
+      .from("ledger")
+      .select("*")
+      .eq("cost_price", costPrice);
   }
 
   async getBySalePrice(salePrice: number) {
-    return await supabase.from("ledger").select("*").eq("salePrice", salePrice);
+    return await supabase
+      .from("ledger")
+      .select("*")
+      .eq("sale_price", salePrice);
   }
 
   async getByProfit(profit: number) {

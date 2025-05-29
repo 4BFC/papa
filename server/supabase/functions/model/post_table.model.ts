@@ -9,8 +9,8 @@ interface PostTableModel {
   id: string;
   item: string;
   count: number;
-  costPrice: number;
-  salePrice: number;
+  cost_price: number;
+  sale_price: number;
   profit: number;
   type: boolean;
   //   created_at: string;
@@ -20,7 +20,9 @@ interface PostTableModel {
 interface ValidBody {
   item: string;
   count: number;
-  price: number;
+  cost_price: number;
+  sale_price: number;
+  profit: number;
   type: boolean;
 }
 
@@ -29,7 +31,9 @@ function isValidBody(obj: ValidBody): obj is PostTableModel {
   return (
     typeof obj === "object" &&
     typeof obj.item === "string" &&
-    typeof obj.price === "number" &&
+    typeof obj.cost_price === "number" &&
+    typeof obj.sale_price === "number" &&
+    typeof obj.profit === "number" &&
     typeof obj.type === "boolean"
   );
 }
