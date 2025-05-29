@@ -1,6 +1,8 @@
 export interface LedgerRequire {
   item: string;
-  price: number;
+  costPrice: number;
+  salePrice: number;
+  profit: number;
   type: boolean;
   count: number;
 }

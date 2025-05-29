@@ -2,12 +2,14 @@
 
 import { Dispatch, ReactElement, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
+import { LedgerRequire } from "@/types/ledger";
 
-interface FormValues {
-  item: string;
-  count: number;
-  price: number;
-}
+// interface FormValues {
+//   item: string;
+//   count: number;
+//   costPrice: number;
+//   salePrice: number;
+// }
 
 const Home: ReactElement = () => {
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
@@ -17,7 +19,7 @@ const Home: ReactElement = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<LedgerRequire>();
 
   const handleActive = ({
     handle,
@@ -27,7 +29,7 @@ const Home: ReactElement = () => {
     handle((prev) => !prev);
   };
 
-  const onSubmit = (data: FormValues): void => {
+  const onSubmit = (data: LedgerRequire): void => {
     console.log(data);
   };
 
@@ -80,9 +82,9 @@ const Home: ReactElement = () => {
               <input
                 className="w-full p-1 border-1"
                 type="number"
-                placeholder="가격"
-                {...register("price", {
-                  required: "가격을 기입해야 합니다.",
+                placeholder="원가"
+                {...register("costPrice", {
+                  required: "원가를 기입해야 합니다.",
                   valueAsNumber: true,
                   min: {
                     value: 100,
@@ -90,7 +92,23 @@ const Home: ReactElement = () => {
                   },
                 })}
               />
-              {errors.price && <span>{errors.price.message}</span>}
+              {errors.costPrice && <span>{errors.costPrice.message}</span>}
+            </div>
+            <div className="w-full">
+              <input
+                className="w-full p-1 border-1"
+                type="number"
+                placeholder="판매가"
+                {...register("salePrice", {
+                  required: "판매가를 기입해야 합니다.",
+                  valueAsNumber: true,
+                  min: {
+                    value: 100,
+                    message: "가격은 100원 이상이어야 합니다.",
+                  },
+                })}
+              />
+              {errors.salePrice && <span>{errors.salePrice.message}</span>}
             </div>
           </div>
           <button
@@ -107,21 +125,23 @@ const Home: ReactElement = () => {
       <div className="h-screen w-full bg-gray-200">
         <div className="w-full">
           {/* 헤더 */}
-          <div className="grid grid-cols-4 bg-gray-100">
+          <div className="grid grid-cols-5 bg-gray-100">
             <div className="border border-gray-300 p-2">상품</div>
             <div className="border border-gray-300 p-2">수량</div>
-            <div className="border border-gray-300 p-2">가격</div>
-            <div className="border border-gray-300 p-2">날짜</div>
+            <div className="border border-gray-300 p-2">판매가</div>
+            <div className="border border-gray-300 p-2">원가</div>
+            <div className="border border-gray-300 p-2">마진</div>
           </div>
           {/* 데이터 행 */}
           <div
-            className="grid grid-cols-4 bg-gray-100"
+            className="grid grid-cols-5 bg-gray-100"
             onClick={() => handleActive({ handle: setButtonActive })}
           >
             <div className="border border-gray-300 p-2">가방</div>
             <div className="border border-gray-300 p-2">1</div>
             <div className="border border-gray-300 p-2">1,000,000</div>
-            <div className="border border-gray-300 p-2">25.05.18</div>
+            <div className="border border-gray-300 p-2">800,000</div>
+            <div className="border border-gray-300 p-2">200,000</div>
           </div>
           {/* 버튼 행 */}
           <div className="grid grid-cols-4">
