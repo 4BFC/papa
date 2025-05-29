@@ -26,8 +26,16 @@ class get_table_model {
     return await supabase.from("ledger").select("*").eq("count", count);
   }
 
-  async getByPrice(price: number) {
-    return await supabase.from("ledger").select("*").eq("price", price);
+  async getByCostPrice(costPrice: number) {
+    return await supabase.from("ledger").select("*").eq("costPrice", costPrice);
+  }
+
+  async getBySalePrice(salePrice: number) {
+    return await supabase.from("ledger").select("*").eq("salePrice", salePrice);
+  }
+
+  async getByProfit(profit: number) {
+    return await supabase.from("ledger").select("*").eq("profit", profit);
   }
 
   async getByDate(date: string) {

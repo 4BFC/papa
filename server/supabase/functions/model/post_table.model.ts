@@ -9,7 +9,9 @@ interface PostTableModel {
   id: string;
   item: string;
   count: number;
-  price: number;
+  costPrice: number;
+  salePrice: number;
+  profit: number;
   type: boolean;
   //   created_at: string;
   //   updated_at: string;
