@@ -33,7 +33,8 @@
       "@/hook/*": ["./src/hook/*"],
       "@/api/*": ["./src/api/*"],
       "@/api/client/*": ["./src/api/client/*"],
-      "@/api/server/*": ["./src/api/server/*"]
+      "@/api/server/*": ["./src/api/server/*"],
+      "@/components/*": ["./src/components/*"]
     }
   },
   "include": [
