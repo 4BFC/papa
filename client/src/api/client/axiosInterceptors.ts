@@ -9,7 +9,7 @@ import {
   handleLogout,
   refreshToken,
 } from "@/api/errorHandlers";
-// import { transformRequestData, transformResponseData } from "./transformers";
+import { transformRequestData } from "@/api/transformers";
 
 axiosInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
@@ -25,11 +25,9 @@ axiosInstance.interceptors.request.use(
     config.metadata = { startTime: new Date().getTime() };
 
     /**요청 데이터 변환: 현재는 불필요 */
-    /**
     if (config.data) {
       config.data = transformRequestData(config.data);
-    } 
-    */
+    }
 
     return config;
   },
