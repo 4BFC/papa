@@ -1,8 +1,17 @@
 "use client";
 
-import { Dispatch, ReactElement, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
-import { LedgerRequire } from "@/types/ledger";
+import { LedgerModel, LedgerRequire } from "@/types";
+import { HeaderRow } from "@/components";
+import { useFetch } from "@/hook";
+import { get, post } from "@/api";
 
 // interface FormValues {
 //   item: string;
@@ -12,9 +21,16 @@ import { LedgerRequire } from "@/types/ledger";
 // }
 
 const Home: ReactElement = () => {
+  const {
+    isData: getData,
+    isLoading: getLoading,
+    isError: getError,
+  } = useFetch<LedgerModel[]>(() => get("/api/ledger/get"), true);
+
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
   const [isButtonActive, setButtonActive] = useState<boolean>(true);
-
+  /** POST 임시 상태 관리 */
+  const [, setIsResponse] = useState<LedgerRequire | null>(null);
   const {
     register,
     handleSubmit,
@@ -29,9 +45,29 @@ const Home: ReactElement = () => {
     handle((prev) => !prev);
   };
 
-  const onSubmit = (data: LedgerRequire): void => {
+  const onSubmit = async (data: LedgerRequire): Promise<void> => {
+    try {
+      // 데이터에 required에 맞는 필드 추가 필요.
+      const result = await post("api/ledger/post", data);
+      setIsResponse(result);
+    } catch (error: unknown) {
+      console.error(error);
+    }
     console.log(data);
   };
+
+  /** API GET state 확인 */
+  useEffect(() => {
+    if (getLoading) {
+      console.log("Loading...");
+    }
+    if (getData) {
+      console.log(getData);
+    }
+    if (getError) {
+      console.log(getError);
+    }
+  }, [getData, getLoading, getError]);
 
   return (
     // 여기서 h-screen은 매번 기입을 해야하는건가?
@@ -125,12 +161,7 @@ const Home: ReactElement = () => {
       <div className="h-screen w-full bg-gray-200 overflow-y-auto">
         <div className="w-full">
           {/* 헤더 : component로 분리 필요 */}
-          <div className="grid grid-cols-4 bg-gray-100">
-            <div className="border border-gray-300 p-2">상품</div>
-            <div className="border border-gray-300 p-2">수량</div>
-            <div className="border border-gray-300 p-2">판매가</div>
-            <div className="border border-gray-300 p-2">원가</div>
-          </div>
+          <HeaderRow />
           {/* 데이터 행 : 기능 구현 후 componet로 분리 필요 */}
           <div>
             <div

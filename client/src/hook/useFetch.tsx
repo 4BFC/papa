@@ -7,6 +7,7 @@ const useFetch = (
   const [isData, setData] = useState<T>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isError, setError] = useState<string>("");
+  /** trigger 함수 추가 또는 enabled를 활용해서 trigger 구현 */
   useEffect(() => {
     if (!enabled) return;
     const fetchData = async (): void => {
