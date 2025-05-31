@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const useFetch = <T,>(
-  type: () => Promise<T>,
+  type: () => Promise<{ data: T }>,
   enabled: boolean
 ): {
   isData: T | undefined;
@@ -13,7 +13,7 @@ const useFetch = <T,>(
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isError, setError] = useState<string>("");
 
-  const fetchData = async (): void => {
+  const fetchData = async (): Promise<void> => {
     try {
       setLoading(true);
       const { data } = await type();
@@ -22,7 +22,7 @@ const useFetch = <T,>(
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError(`예외 타입 Error : ${error.message}`);
+        setError(`예외 타입 Error : ${(error as { message: string }).message}`);
       }
     } finally {
       setLoading(false);

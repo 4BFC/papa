@@ -21,7 +21,7 @@ import { get, post } from "@/api";
 //   salePrice: number;
 // }
 
-const Home: ReactElement = () => {
+export default function Home(): ReactElement {
   // type LedgerGetResponse = {
   //   data: LedgerModel[];
   // };
@@ -79,12 +79,15 @@ const Home: ReactElement = () => {
       // 데이터에 required에 맞는 필드 추가 필요.
       const result = await post("api/ledger/post", payload);
       await fetchData();
-      setIsResponse(result);
+      if (result !== undefined) {
+        setIsResponse(result);
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error.message);
       } else {
-        console.error(`예외 타입 Error : ${error.message}`);
+        console.error("예외 타입 Error", String(error));
+        throw error;
       }
     }
   };
@@ -215,6 +218,4 @@ const Home: ReactElement = () => {
       <footer>이득 총합 : {totalProfit.toLocaleString()}원</footer>
     </div>
   );
-};
-
-export default Home;
+}

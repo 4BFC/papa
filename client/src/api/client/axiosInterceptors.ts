@@ -1,4 +1,4 @@
-import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from "axios";
 import axiosInstance from "./axiosInstance";
 import {
   handleUnauthorized,
@@ -15,7 +15,7 @@ import {
 } from "@/api/transformers";
 
 axiosInstance.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     /**인증 토큰 추가 */
     const TOKEN: string = process.env.NEXT_PUBLIC_MY_ANON_KEY || "";
     // const token = localStorage.getItem("token") || TOKEN;

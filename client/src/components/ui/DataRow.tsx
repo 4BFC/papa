@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { LedgerModel } from "@/types";
 
-const DataRow = ({ data }: { data: LedgerModel }): Jex.Element => {
+const DataRow = ({ data }: { data: LedgerModel }): React.ReactElement => {
   const [isButtonActive, setButtonActive] = useState<boolean>(true);
 
   return (
