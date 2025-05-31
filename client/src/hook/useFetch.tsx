@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const useFetch = (
+const useFetch = <T,>(
   type: () => Promise<T>,
   enabled: boolean
 ): { isData: T | null } => {
@@ -13,8 +13,8 @@ const useFetch = (
     const fetchData = async (): void => {
       try {
         setLoading(true);
-        const response = await type();
-        setData(response);
+        const { data } = await type();
+        setData(data);
       } catch (error: unknown) {
         if (error instanceof Error) {
           setError(error.message);
