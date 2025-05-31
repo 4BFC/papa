@@ -1,23 +1,53 @@
 "use client";
 
-import { Dispatch, ReactElement, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  ReactElement,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
+import { LedgerModel, LedgerRequire } from "@/types";
+import { HeaderRow, DataRow } from "@/components";
+import { useFetch } from "@/hook";
+import { get, post } from "@/api";
 
-interface FormValues {
-  item: string;
-  count: number;
-  price: number;
-}
+// interface FormValues {
+//   item: string;
+//   count: number;
+//   costPrice: number;
+//   salePrice: number;
+// }
 
-const Home: ReactElement = () => {
+export default function Home(): ReactElement {
+  // type LedgerGetResponse = {
+  //   data: LedgerModel[];
+  // };
+
+  const {
+    isData: getData,
+    isLoading: getLoading,
+    isError: getError,
+    fetchData,
+  } = useFetch<LedgerModel[]>(() => get("/api/ledger/get"), true);
+
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
-  const [isButtonActive, setButtonActive] = useState<boolean>(true);
-
+  /** POST 임시 상태 관리 */
+  const [, setIsResponse] = useState<LedgerRequire | null>(null);
+  /** 폼 상태 관리 && 데이터 */
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<LedgerRequire>();
+  const [isTax, setTax] = useState<boolean>(false);
+  const totalProfit = useMemo(() => {
+    return getData
+      ? getData.reduce((acc, item) => acc + (item.profit ?? 0), 0)
+      : 0;
+  }, [getData]);
 
   const handleActive = ({
     handle,
@@ -27,9 +57,53 @@ const Home: ReactElement = () => {
     handle((prev) => !prev);
   };
 
-  const onSubmit = (data: FormValues): void => {
-    console.log(data);
+  const onSubmit = async (data: LedgerRequire): Promise<void> => {
+    try {
+      const costPrice = data.costPrice * data.count;
+      const salePrice = data.salePrice * data.count;
+      let profit = salePrice - costPrice;
+
+      if (isTax) {
+        profit *= 0.97;
+      }
+
+      /**profit 필드 추가 */
+      const payload = {
+        ...data,
+        profit,
+        costPrice,
+        salePrice,
+        type: isTax,
+      };
+
+      // 데이터에 required에 맞는 필드 추가 필요.
+      const result = await post("api/ledger/post", payload);
+      await fetchData();
+      if (result !== undefined) {
+        setIsResponse(result);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error("예외 타입 Error", String(error));
+        throw error;
+      }
+    }
   };
+
+  /** API GET state 확인 */
+  useEffect(() => {
+    if (getLoading) {
+      console.log("Loading...");
+    }
+    if (getData) {
+      console.log(getData);
+    }
+    if (getError) {
+      console.log(getError);
+    }
+  }, [getData, getLoading, getError]);
 
   return (
     // 여기서 h-screen은 매번 기입을 해야하는건가?
@@ -50,14 +124,25 @@ const Home: ReactElement = () => {
           className="flex flex-col items-center justify-center w-full"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="flex justify-center gap-1 w-11/12">
+          <div className="flex justify-center items-center gap-1 w-11/12">
             <div className="w-full">
-              <input
-                className="w-full p-1 border-1"
-                type="text"
-                placeholder="상품"
-                {...register("item", { required: "상품을 기입해야 합니다." })}
-              />
+              <div className="flex items-center gap-1">
+                <input
+                  className="w-10 h-10"
+                  type="checkbox"
+                  onClick={() => {
+                    console.log("check isTax");
+                    setTax((prev) => !prev);
+                  }}
+                  {...register("type")}
+                />
+                <input
+                  className="w-full p-1 border-1"
+                  type="text"
+                  placeholder="상품"
+                  {...register("item", { required: "상품을 기입해야 합니다." })}
+                />
+              </div>
               {errors.item && <span>{errors.item.message}</span>}
             </div>
             <div className="w-full">
@@ -77,12 +162,13 @@ const Home: ReactElement = () => {
               {errors.count && <span>{errors.count.message}</span>}
             </div>
             <div className="w-full">
+              {/* 원가 계산을 수량에 따라 값이 적용되게 코드를 구현할 필요 있음 */}
               <input
                 className="w-full p-1 border-1"
                 type="number"
-                placeholder="가격"
-                {...register("price", {
-                  required: "가격을 기입해야 합니다.",
+                placeholder="원가"
+                {...register("costPrice", {
+                  required: "원가를 기입해야 합니다.",
                   valueAsNumber: true,
                   min: {
                     value: 100,
@@ -90,7 +176,23 @@ const Home: ReactElement = () => {
                   },
                 })}
               />
-              {errors.price && <span>{errors.price.message}</span>}
+              {errors.costPrice && <span>{errors.costPrice.message}</span>}
+            </div>
+            <div className="w-full">
+              <input
+                className="w-full p-1 border-1"
+                type="number"
+                placeholder="판매가"
+                {...register("salePrice", {
+                  required: "판매가를 기입해야 합니다.",
+                  valueAsNumber: true,
+                  min: {
+                    value: 100,
+                    message: "가격은 100원 이상이어야 합니다.",
+                  },
+                })}
+              />
+              {errors.salePrice && <span>{errors.salePrice.message}</span>}
             </div>
           </div>
           <button
@@ -104,49 +206,16 @@ const Home: ReactElement = () => {
       <button onClick={() => handleActive({ handle: setHeaderActive })}>
         {isHeaderActive ? "열기" : "접기"}
       </button>
-      <div className="h-screen w-full bg-gray-200">
+      <div className="h-screen w-full bg-gray-200 overflow-y-auto">
         <div className="w-full">
-          {/* 헤더 */}
-          <div className="grid grid-cols-4 bg-gray-100">
-            <div className="border border-gray-300 p-2">상품</div>
-            <div className="border border-gray-300 p-2">수량</div>
-            <div className="border border-gray-300 p-2">가격</div>
-            <div className="border border-gray-300 p-2">날짜</div>
-          </div>
-          {/* 데이터 행 */}
-          <div
-            className="grid grid-cols-4 bg-gray-100"
-            onClick={() => handleActive({ handle: setButtonActive })}
-          >
-            <div className="border border-gray-300 p-2">가방</div>
-            <div className="border border-gray-300 p-2">1</div>
-            <div className="border border-gray-300 p-2">1,000,000</div>
-            <div className="border border-gray-300 p-2">25.05.18</div>
-          </div>
-          {/* 버튼 행 */}
-          <div className="grid grid-cols-4">
-            <div
-              className={`w-full border border-gray-300 col-span-4 flex justify-center items-center transition-all duration-300 ease-in-out ${
-                isButtonActive
-                  ? "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
-                  : "max-h-[58px] opacity-100 transform scale-y-100 origin-top p-2"
-              }`}
-            >
-              <div className="flex w-6/12 gap-4">
-                <button className="w-1/2 bg-blue-500 text-white p-2 rounded-md">
-                  수정
-                </button>
-                <button className="w-1/2 bg-red-400 text-white p-2 rounded-md">
-                  삭제
-                </button>
-              </div>
-            </div>
-          </div>
+          {/* 헤더 : component로 분리 필요 */}
+          <HeaderRow />
+          {/* 데이터 행 : 기능 구현 후 componet로 분리 필요 */}
+          {getData &&
+            getData.map((item) => <DataRow key={item.id} data={item} />)}
         </div>
       </div>
-      <footer>총합</footer>
+      <footer>이득 총합 : {totalProfit.toLocaleString()}원</footer>
     </div>
   );
-};
-
-export default Home;
+}

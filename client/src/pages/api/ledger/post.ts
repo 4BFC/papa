@@ -4,7 +4,7 @@ import { axiosInstanceServer } from "@/api";
 const post = async <T>(
   req: NextApiRequest,
   res: NextApiResponse
-): Promise<T> => {
+): Promise<T | undefined> => {
   try {
     const response = await axiosInstanceServer.post<T>(`/ledger`, req.body);
     res.status(200).json(response.data);
@@ -14,6 +14,7 @@ const post = async <T>(
       console.error(error);
     } else {
       console.error("예외 타입 Error", String(error));
+      throw error;
     }
   }
 };

@@ -1,4 +1,4 @@
-import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from "axios";
 import axiosInstance from "./axiosInstance";
 import {
   handleUnauthorized,
@@ -9,10 +9,13 @@ import {
   handleLogout,
   refreshToken,
 } from "@/api/errorHandlers";
-// import { transformRequestData, transformResponseData } from "./transformers";
+import {
+  transformRequestData,
+  transformResponseData,
+} from "@/api/transformers";
 
 axiosInstance.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
     /**인증 토큰 추가 */
     const TOKEN: string = process.env.NEXT_PUBLIC_MY_ANON_KEY || "";
     // const token = localStorage.getItem("token") || TOKEN;
@@ -25,11 +28,9 @@ axiosInstance.interceptors.request.use(
     config.metadata = { startTime: new Date().getTime() };
 
     /**요청 데이터 변환: 현재는 불필요 */
-    /**
     if (config.data) {
       config.data = transformRequestData(config.data);
-    } 
-    */
+    }
 
     return config;
   },
@@ -41,11 +42,10 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
     /**응답 데이터 변환: 현재는 불필요 */
-    /**
+
     if (response.data) {
       response.data = transformResponseData(response.data);
     }
-    */
 
     /**성능 측정 */
     const endTime = new Date().getTime();
