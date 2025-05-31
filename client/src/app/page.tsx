@@ -9,7 +9,7 @@ import {
 } from "react";
 import { useForm } from "react-hook-form";
 import { LedgerModel, LedgerRequire } from "@/types";
-import { HeaderRow } from "@/components";
+import { HeaderRow, DataRow } from "@/components";
 import { useFetch } from "@/hook";
 import { get, post } from "@/api";
 
@@ -21,6 +21,10 @@ import { get, post } from "@/api";
 // }
 
 const Home: ReactElement = () => {
+  // type LedgerGetResponse = {
+  //   data: LedgerModel[];
+  // };
+
   const {
     isData: getData,
     isLoading: getLoading,
@@ -28,7 +32,6 @@ const Home: ReactElement = () => {
   } = useFetch<LedgerModel[]>(() => get("/api/ledger/get"), true);
 
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
-  const [isButtonActive, setButtonActive] = useState<boolean>(true);
   /** POST 임시 상태 관리 */
   const [, setIsResponse] = useState<LedgerRequire | null>(null);
   /** 폼 상태 관리 && 데이터 */
@@ -37,7 +40,7 @@ const Home: ReactElement = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LedgerRequire>();
-  const [isTax] = useState<boolean>(false);
+  const [isTax, setTax] = useState<boolean>(false);
 
   const handleActive = ({
     handle,
@@ -49,11 +52,20 @@ const Home: ReactElement = () => {
 
   const onSubmit = async (data: LedgerRequire): Promise<void> => {
     try {
-      const profit = data.costPrice - data.salePrice;
+      const costPrice = data.costPrice * data.count;
+      const salePrice = data.salePrice * data.count;
+      let profit = salePrice - costPrice;
+
+      if (isTax) {
+        profit *= 0.97;
+      }
+
       /**profit 필드 추가 */
       const payload = {
         ...data,
         profit,
+        costPrice,
+        salePrice,
         type: isTax,
       };
 
@@ -101,14 +113,25 @@ const Home: ReactElement = () => {
           className="flex flex-col items-center justify-center w-full"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="flex justify-center gap-1 w-11/12">
+          <div className="flex justify-center items-center gap-1 w-11/12">
             <div className="w-full">
-              <input
-                className="w-full p-1 border-1"
-                type="text"
-                placeholder="상품"
-                {...register("item", { required: "상품을 기입해야 합니다." })}
-              />
+              <div className="flex items-center gap-1">
+                <input
+                  className="w-10 h-10"
+                  type="checkbox"
+                  onClick={() => {
+                    console.log("check isTax");
+                    setTax((prev) => !prev);
+                  }}
+                  {...register("type")}
+                />
+                <input
+                  className="w-full p-1 border-1"
+                  type="text"
+                  placeholder="상품"
+                  {...register("item", { required: "상품을 기입해야 합니다." })}
+                />
+              </div>
               {errors.item && <span>{errors.item.message}</span>}
             </div>
             <div className="w-full">
@@ -128,6 +151,7 @@ const Home: ReactElement = () => {
               {errors.count && <span>{errors.count.message}</span>}
             </div>
             <div className="w-full">
+              {/* 원가 계산을 수량에 따라 값이 적용되게 코드를 구현할 필요 있음 */}
               <input
                 className="w-full p-1 border-1"
                 type="number"
@@ -176,44 +200,8 @@ const Home: ReactElement = () => {
           {/* 헤더 : component로 분리 필요 */}
           <HeaderRow />
           {/* 데이터 행 : 기능 구현 후 componet로 분리 필요 */}
-          <div>
-            <div
-              className="grid grid-cols-4 bg-gray-100"
-              onClick={() => handleActive({ handle: setButtonActive })}
-            >
-              <div className="border border-gray-300 p-2">가방</div>
-              <div className="border border-gray-300 p-2">1</div>
-              <div className="border border-gray-300 p-2">1,000,000</div>
-              <div className="border border-gray-300 p-2">800,000</div>
-            </div>
-            <div
-              className="grid grid-cols-2 bg-gray-100"
-              onClick={() => handleActive({ handle: setButtonActive })}
-            >
-              <div className="border border-gray-300 p-1">이득 금액</div>
-              <div className="border border-gray-300 p-1">200,000</div>
-            </div>
-            {/* 버튼 행 */}
-            <div className="grid grid-cols-4">
-              <div
-                className={`w-full border border-gray-300 col-span-4 flex flex-col justify-center items-center transition-all duration-300 ease-in-out ${
-                  isButtonActive
-                    ? "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
-                    : "max-h-[100px] opacity-100 transform scale-y-100 origin-top p-2"
-                }`}
-              >
-                <div className="flex w-6/12 gap-4">
-                  <button className="w-1/2 bg-blue-500 text-white p-2 rounded-md">
-                    수정
-                  </button>
-                  <button className="w-1/2 bg-red-400 text-white p-2 rounded-md">
-                    삭제
-                  </button>
-                </div>
-                <div>작성일 : 2025.05.29</div>
-              </div>
-            </div>
-          </div>
+          {getData &&
+            getData.map((item) => <DataRow key={item.id} data={item} />)}
         </div>
       </div>
       <footer>이득 총합 : 1,200,000</footer>
