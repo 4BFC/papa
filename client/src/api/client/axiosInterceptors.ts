@@ -9,7 +9,10 @@ import {
   handleLogout,
   refreshToken,
 } from "@/api/errorHandlers";
-import { transformRequestData } from "@/api/transformers";
+import {
+  transformRequestData,
+  transformResponseData,
+} from "@/api/transformers";
 
 axiosInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
@@ -39,11 +42,10 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
     /**응답 데이터 변환: 현재는 불필요 */
-    /**
+
     if (response.data) {
       response.data = transformResponseData(response.data);
     }
-    */
 
     /**성능 측정 */
     const endTime = new Date().getTime();
