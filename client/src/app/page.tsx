@@ -13,6 +13,7 @@ import { LedgerModel, LedgerRequire } from "@/types";
 import { HeaderRow, DataRow } from "@/components";
 import { useFetch } from "@/hook";
 import { get, post } from "@/api";
+import "@/api/client/axiosInterceptors";
 
 // interface FormValues {
 //   item: string;
