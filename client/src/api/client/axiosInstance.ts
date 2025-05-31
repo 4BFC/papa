@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from "axios";
 
 const axiosInstance: AxiosInstance = axios.create({
-  baseURL: "http://localhost:3000" ?? "https://papa-secretary.vercel.app/",
+  baseURL:
+    process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://papa-secretary.vercel.app",
   timeout: 5000,
   headers: {
     "Content-Type": "application/json",
