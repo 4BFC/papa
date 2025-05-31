@@ -31,11 +31,13 @@ const Home: ReactElement = () => {
   const [isButtonActive, setButtonActive] = useState<boolean>(true);
   /** POST 임시 상태 관리 */
   const [, setIsResponse] = useState<LedgerRequire | null>(null);
+  /** 폼 상태 관리 && 데이터 */
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LedgerRequire>();
+  const [isTax] = useState<boolean>(false);
 
   const handleActive = ({
     handle,
@@ -47,13 +49,24 @@ const Home: ReactElement = () => {
 
   const onSubmit = async (data: LedgerRequire): Promise<void> => {
     try {
+      const profit = data.costPrice - data.salePrice;
+      /**profit 필드 추가 */
+      const payload = {
+        ...data,
+        profit,
+        type: isTax,
+      };
+
       // 데이터에 required에 맞는 필드 추가 필요.
-      const result = await post("api/ledger/post", data);
+      const result = await post("api/ledger/post", payload);
       setIsResponse(result);
     } catch (error: unknown) {
-      console.error(error);
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error(`예외 타입 Error : ${error.message}`);
+      }
     }
-    console.log(data);
   };
 
   /** API GET state 확인 */
