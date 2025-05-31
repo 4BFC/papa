@@ -12,8 +12,8 @@ const DataRow = ({ data }: { data: LedgerModel }): React.ReactElement => {
       >
         <div className="border border-gray-300 p-2">{data.item}</div>
         <div className="border border-gray-300 p-2">{data.count}</div>
-        <div className="border border-gray-300 p-2">{data.costPrice}</div>
         <div className="border border-gray-300 p-2">{data.salePrice}</div>
+        <div className="border border-gray-300 p-2">{data.costPrice}</div>
       </div>
       <div
         className="grid grid-cols-2 bg-gray-100"

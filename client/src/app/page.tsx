@@ -146,6 +146,7 @@ export default function Home(): ReactElement {
               </div>
               {errors.item && <span>{errors.item.message}</span>}
             </div>
+
             <div className="w-full">
               <input
                 className="w-full p-1 border-1"
@@ -163,6 +164,22 @@ export default function Home(): ReactElement {
               {errors.count && <span>{errors.count.message}</span>}
             </div>
             <div className="w-full">
+              <input
+                className="w-full p-1 border-1"
+                type="number"
+                placeholder="판매가"
+                {...register("salePrice", {
+                  required: "판매가를 기입해야 합니다.",
+                  valueAsNumber: true,
+                  min: {
+                    value: 100,
+                    message: "가격은 100원 이상이어야 합니다.",
+                  },
+                })}
+              />
+              {errors.salePrice && <span>{errors.salePrice.message}</span>}
+            </div>
+            <div className="w-full">
               {/* 원가 계산을 수량에 따라 값이 적용되게 코드를 구현할 필요 있음 */}
               <input
                 className="w-full p-1 border-1"
@@ -178,22 +195,6 @@ export default function Home(): ReactElement {
                 })}
               />
               {errors.costPrice && <span>{errors.costPrice.message}</span>}
-            </div>
-            <div className="w-full">
-              <input
-                className="w-full p-1 border-1"
-                type="number"
-                placeholder="판매가"
-                {...register("salePrice", {
-                  required: "판매가를 기입해야 합니다.",
-                  valueAsNumber: true,
-                  min: {
-                    value: 100,
-                    message: "가격은 100원 이상이어야 합니다.",
-                  },
-                })}
-              />
-              {errors.salePrice && <span>{errors.salePrice.message}</span>}
             </div>
           </div>
           <button
