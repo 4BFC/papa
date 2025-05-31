@@ -5,6 +5,7 @@ import {
   ReactElement,
   SetStateAction,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
@@ -29,6 +30,7 @@ const Home: ReactElement = () => {
     isData: getData,
     isLoading: getLoading,
     isError: getError,
+    fetchData,
   } = useFetch<LedgerModel[]>(() => get("/api/ledger/get"), true);
 
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
@@ -41,6 +43,11 @@ const Home: ReactElement = () => {
     formState: { errors },
   } = useForm<LedgerRequire>();
   const [isTax, setTax] = useState<boolean>(false);
+  const totalProfit = useMemo(() => {
+    return getData
+      ? getData.reduce((acc, item) => acc + (item.profit ?? 0), 0)
+      : 0;
+  }, [getData]);
 
   const handleActive = ({
     handle,
@@ -71,6 +78,7 @@ const Home: ReactElement = () => {
 
       // 데이터에 required에 맞는 필드 추가 필요.
       const result = await post("api/ledger/post", payload);
+      await fetchData();
       setIsResponse(result);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -204,7 +212,7 @@ const Home: ReactElement = () => {
             getData.map((item) => <DataRow key={item.id} data={item} />)}
         </div>
       </div>
-      <footer>이득 총합 : 1,200,000</footer>
+      <footer>이득 총합 : {totalProfit.toLocaleString()}원</footer>
     </div>
   );
 };
