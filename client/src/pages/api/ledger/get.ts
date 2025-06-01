@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { axiosInstanceServer } from "@/api";
-import { corsMiddleware } from "@/utils/cors";
+//import { corsMiddleware } from "@/utils/cors";
 
 const get = async (
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<void> => {
-  await corsMiddleware(req, res);
+  //await corsMiddleware(req, res);
 
   try {
     const response = await axiosInstanceServer.get("/ledger");
