@@ -16,19 +16,27 @@ const DataRow = ({ data }: { data: LedgerModel }): React.ReactElement => {
             data.type ? "bg-blue-50" : "bg-white"
           }`}
         >
-          <div className="w-20/100 py-3 px-2 text-left">
+          <div className="w-15/100 py-3 px-1 text-left">
             {splitData(data.item).map((el) => {
               return <div key={el + new Date().getTime()}>{el}</div>;
             })}
           </div>
-          <div className="w-15/100 py-3 px-2 text-center">{data.count}</div>
-          <div className="w-22/100 py-3 px-2 text-right">
+          <div className="w-10/100 py-3 px-1 text-center">{data.count}</div>
+          <div className="flex flex-col w-26/100 py-3 px-2 text-right">
             {formatCurrencyData(data.salePrice, "ko-KR")}
+            <div className="flex flex-col justify-between text-xs text-gray-600">
+              <span>카드 16,000</span>
+              <span>현금 16,000</span>
+            </div>
           </div>
-          <div className="w-22/100 py-3 px-2 text-right">
+          <div className="flex flex-col w-26/100 py-3 px-1 text-right">
             {formatCurrencyData(data.costPrice, "ko-KR")}
+            <div className="flex flex-col justify-between text-xs text-gray-600">
+              <span>카드 16,000</span>
+              <span>현금 16,000</span>
+            </div>
           </div>
-          <div className="w-21/100 py-3 px-2 text-right text-green-600 font-medium">
+          <div className="flex flex-col w-23/100 py-3 px-1 text-right text-green-600 font-medium">
             {formatCurrencyData(data.profit, "ko-KR")}
           </div>
         </div>
