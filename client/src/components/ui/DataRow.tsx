@@ -1,24 +1,60 @@
+import { useState } from "react";
 import { LedgerModel } from "@/types";
 
 const DataRow = ({ data }: { data: LedgerModel }): React.ReactElement => {
+  const [isButtonActive, setButtonActive] = useState<boolean>(true);
+
   return (
-    <div className="overflow-x-auto">
-      <div className="w-full flex justify-center items-center text-sm font-sans border-b border-gray-200">
-        <div className="w-20/100 bg-white py-3 px-2 text-left">{data.item}</div>
-        <div className="w-15/100 bg-white py-3 px-2 text-center">
-          {data.count}
-        </div>
-        <div className="w-25/100 bg-white py-3 px-2 text-right">
-          {data.salePrice}
-        </div>
-        <div className="w-20/100 bg-white py-3 px-2 text-right">
-          {data.costPrice}
-        </div>
-        <div className="w-20/100 bg-white py-3 px-2 text-right text-green-600 font-medium">
-          {data.profit}
+    <>
+      <div
+        className="overflow-x-auto"
+        onClick={() => setButtonActive((prev) => !prev)}
+      >
+        <div
+          className={`w-full flex justify-center items-center text-sm font-sans border-b border-gray-200 ${
+            data.type ? "bg-blue-50" : "bg-white"
+          }`}
+        >
+          <div className="w-20/100 py-3 px-2 text-left">{data.item}</div>
+          <div className="w-15/100 py-3 px-2 text-center">{data.count}</div>
+          <div className="w-25/100 py-3 px-2 text-right">{data.salePrice}</div>
+          <div className="w-20/100 py-3 px-2 text-right">{data.costPrice}</div>
+          <div className="w-20/100 py-3 px-2 text-right text-green-600 font-medium">
+            {data.profit}
+          </div>
         </div>
       </div>
-    </div>
+      {/** 버튼 행 */}
+      <div className="grid grid-cols-4 text-sm font-medium">
+        <div
+          className={`w-full border gap-2 border-gray-300 col-span-4 flex flex-col justify-center items-center transition-all duration-300 ease-in-out ${
+            isButtonActive
+              ? "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
+              : "max-h-[110px] opacity-100 transform scale-y-100 origin-top px-2 py-3"
+          }`}
+        >
+          <div className="flex justify-between w-8/12 gap-4">
+            <button className="w-full bg-blue-500 text-white py-2 rounded-md">
+              수정
+            </button>
+            <button className="w-full bg-red-400 text-white py-2 rounded-md">
+              삭제
+            </button>
+            {/* <button className="w-full bg-red-500 text-white py-2 rounded-md">
+              복합 결제
+            </button> */}
+          </div>
+          <div className="text-xs text-gray-600">
+            작성일 : {String(data.createdAt).split("T")[0]}
+          </div>
+          {data.type ? (
+            <div className="text-xs text-gray-600">카드 결제</div>
+          ) : (
+            <div className="text-xs text-gray-600">현금 결제</div>
+          )}
+        </div>
+      </div>
+    </>
   );
 };
 
