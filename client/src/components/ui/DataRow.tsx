@@ -16,12 +16,12 @@ const DataRow = ({ data }: { data: LedgerModel }): React.ReactElement => {
             data.type ? "bg-blue-50" : "bg-white"
           }`}
         >
-          <div className="w-15/100 py-3 px-1 text-left">
+          <div className="w-18/100 py-3 px-1 text-left">
             {splitData(data.item).map((el) => {
               return <div key={el + new Date().getTime()}>{el}</div>;
             })}
           </div>
-          <div className="w-10/100 py-3 px-1 text-center">{data.count}</div>
+          <div className="w-7/100 py-3 px-0 text-center">{data.count}</div>
           <div className="flex flex-col w-26/100 py-3 px-2 text-right">
             {formatCurrencyData(data.salePrice, "ko-KR")}
             <div className="flex flex-col justify-between text-xs text-gray-600">
