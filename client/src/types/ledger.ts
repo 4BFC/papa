@@ -9,7 +9,7 @@ export interface LedgerRequire {
 
 export interface LedgerModel extends LedgerRequire {
   id: number;
-  user_id: string;
-  update_at: string;
-  created_at: string;
+  userId: string;
+  updateAt: string;
+  createdAt: string;
 }
