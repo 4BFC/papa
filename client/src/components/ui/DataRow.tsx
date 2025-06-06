@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { LedgerModel } from "@/types";
+import { splitData, formatCurrencyData } from "@/utils";
 
 const DataRow = ({ data }: { data: LedgerModel }): React.ReactElement => {
   const [isButtonActive, setButtonActive] = useState<boolean>(true);
@@ -15,12 +16,20 @@ const DataRow = ({ data }: { data: LedgerModel }): React.ReactElement => {
             data.type ? "bg-blue-50" : "bg-white"
           }`}
         >
-          <div className="w-20/100 py-3 px-2 text-left">{data.item}</div>
+          <div className="w-20/100 py-3 px-2 text-left">
+            {splitData(data.item).map((el) => {
+              return <div key={el + new Date().getTime()}>{el}</div>;
+            })}
+          </div>
           <div className="w-15/100 py-3 px-2 text-center">{data.count}</div>
-          <div className="w-25/100 py-3 px-2 text-right">{data.salePrice}</div>
-          <div className="w-20/100 py-3 px-2 text-right">{data.costPrice}</div>
-          <div className="w-20/100 py-3 px-2 text-right text-green-600 font-medium">
-            {data.profit}
+          <div className="w-22/100 py-3 px-2 text-right">
+            {formatCurrencyData(data.salePrice, "ko-KR")}
+          </div>
+          <div className="w-22/100 py-3 px-2 text-right">
+            {formatCurrencyData(data.costPrice, "ko-KR")}
+          </div>
+          <div className="w-21/100 py-3 px-2 text-right text-green-600 font-medium">
+            {formatCurrencyData(data.profit, "ko-KR")}
           </div>
         </div>
       </div>
@@ -45,7 +54,15 @@ const DataRow = ({ data }: { data: LedgerModel }): React.ReactElement => {
             </button> */}
           </div>
           <div className="text-xs text-gray-600">
-            작성일 : {String(data.createdAt).split("T")[0]}
+            작성일 :{" "}
+            {String(data.createdAt).split("T")[0] +
+              " " +
+              String(data.createdAt)
+                .split("T")[1]
+                .split(".")[0]
+                .split(":")
+                .slice(0, 2)
+                .join(":")}
           </div>
           {data.type ? (
             <div className="text-xs text-gray-600">카드 결제</div>
