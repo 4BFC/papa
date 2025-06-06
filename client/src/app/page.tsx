@@ -267,7 +267,7 @@ export default function Home(): ReactElement {
           {/* 데이터 행 : 기능 구현 후 componet로 분리 필요 */}
           {getLoading ? (
             <div className="flex flex-col justify-center items-center h-full gap-3">
-              <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+              <Loader2 className="w-10 h-10 animate-spin text-green-600" />
               <span className="text-sm font-medium text-gray-600">
                 로딩 중입니다...
               </span>
