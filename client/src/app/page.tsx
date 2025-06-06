@@ -14,7 +14,7 @@ import { HeaderRow, DataRow } from "@/components";
 import { useFetch } from "@/hook";
 import { get, post } from "@/api";
 import "@/api/client/axiosInterceptors";
-import { Calendar, X, ChevronDown, ChevronUp } from "lucide-react";
+import { Calendar, X, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 
 // interface FormValues {
 //   item: string;
@@ -260,18 +260,27 @@ export default function Home(): ReactElement {
           )}
         </button>
       </div>
-      <div className="h-screen w-full bg-gray-200 overflow-y-auto pb-16">
-        <div className="w-full">
+      <div className="flex flex-col h-screen w-full bg-gray-200 overflow-y-auto pb-16">
+        <div className="flex-1 overflow-y-auto w-full">
           {/* 헤더 : component로 분리 필요 */}
           <HeaderRow />
           {/* 데이터 행 : 기능 구현 후 componet로 분리 필요 */}
-          {getData &&
+          {getLoading ? (
+            <div className="flex flex-col justify-center items-center h-full gap-3">
+              <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+              <span className="text-sm font-medium text-gray-600">
+                로딩 중입니다...
+              </span>
+            </div>
+          ) : (
+            getData &&
             getData
               .filter(
                 (el) =>
                   String(el.createdAt).split("T")[0] === todayUTC.split("T")[0]
               )
-              .map((item) => <DataRow key={item.id} data={item} />)}
+              .map((item) => <DataRow key={item.id} data={item} />)
+          )}
           {/* {getData &&
             getData.map((item) => <DataRow key={item.id} data={item} />)} */}
         </div>
