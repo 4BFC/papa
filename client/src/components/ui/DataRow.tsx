@@ -17,9 +17,10 @@ const DataRow = ({ data }: { data: LedgerModel }): React.ReactElement => {
           }`}
         >
           <div className="w-18/100 py-3 px-1 text-left">
-            {splitData(data.item).map((el) => {
-              return <div key={el + new Date().getTime()}>{el}</div>;
-            })}
+            {splitData(data.item).map((el, index) => (
+              // 사실상 고유한 키값은 아니다. 이를 해결할 방법을 생각할 필요 있다.
+              <div key={`${el}-${index}`}>{el}</div>
+            ))}
           </div>
           <div className="w-7/100 py-3 px-0 text-center">{data.count}</div>
           <div className="flex flex-col w-26/100 py-3 px-2 text-right">
