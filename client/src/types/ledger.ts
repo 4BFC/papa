@@ -13,3 +13,8 @@ export interface LedgerModel extends LedgerRequire {
   updateAt: string;
   createdAt: string;
 }
+
+export interface LedgerDataResponse {
+  data: LedgerModel[];
+  error: null | string;
+}

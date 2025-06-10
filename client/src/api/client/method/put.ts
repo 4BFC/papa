@@ -1,6 +1,6 @@
 import { axiosInstance } from "@/api";
 
-const put = async <T>(url: string, body: T): Promise<T | undefined> => {
+const put = async <T>(url: string, body: T): Promise<T> => {
   try {
     const response = await axiosInstance.put<T>(url, body);
     return response.data;
@@ -12,6 +12,7 @@ const put = async <T>(url: string, body: T): Promise<T | undefined> => {
       console.error("예외 타입 Error", String(error));
       throw new Error("알 수 없는 에러가 발생했습니다.");
     }
+    throw new Error("put 함수에서 반환되지 않았습니다.");
   }
 };
 
