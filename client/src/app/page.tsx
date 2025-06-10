@@ -9,9 +9,9 @@ import {
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
-import { LedgerModel, LedgerRequire } from "@/types";
+import { LedgerDataResponse, LedgerModel, LedgerRequire } from "@/types";
 import { HeaderRow, DataRow } from "@/components";
-import { useFetch } from "@/hook";
+import { useFetch, useMutation } from "@/hook";
 import { get, post } from "@/api";
 import "@/api/client/axiosInterceptors";
 import { Calendar, X, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
@@ -24,10 +24,6 @@ import { Calendar, X, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 // }
 
 export default function Home(): ReactElement {
-  // type LedgerGetResponse = {
-  //   data: LedgerModel[];
-  // };
-
   const today = new Date().toLocaleDateString("ko-KR", {
     year: "numeric",
     month: "2-digit",
@@ -40,22 +36,39 @@ export default function Home(): ReactElement {
     isLoading: getLoading,
     isError: getError,
     fetchData,
-  } = useFetch<LedgerModel[]>(() => get("/api/ledger/get"), true);
+    // 해당 get의 타입이 명시적이 않다.
+  } = useFetch<LedgerModel[]>(
+    () => get<LedgerDataResponse>("/api/ledger/get"),
+    true
+  );
+
+  const {
+    isData: postData,
+    isLoading: postLoading,
+    isError: postError,
+    mutate: postMutate,
+  } = useMutation<LedgerDataResponse, LedgerRequire>((payload) =>
+    post<LedgerDataResponse, LedgerRequire>("/api/ledger/post", payload)
+  );
 
   const [isDateSlideOpen, setDateSlideOpen] = useState<boolean>(false);
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
   /** POST 임시 상태 관리 */
-  const [, setIsResponse] = useState<LedgerRequire | null>(null);
+  // const [, setIsResponse] = useState<LedgerRequire | null>(null);
   /** 폼 상태 관리 && 데이터 */
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LedgerRequire>();
+
   const [isTax, setTax] = useState<boolean>(false);
+
   const totalProfit = useMemo(() => {
     return getData
-      ? getData.reduce((acc, item) => acc + (item.profit ?? 0), 0)
+      ? getData
+          .filter((el) => el.createdAt.split("T")[0] === todayUTC.split("T")[0])
+          .reduce((acc, item) => acc + (item.profit ?? 0), 0)
       : 0;
   }, [getData]);
 
@@ -87,11 +100,13 @@ export default function Home(): ReactElement {
       };
 
       // 데이터에 required에 맞는 필드 추가 필요.
-      const result = await post("api/ledger/post", payload);
+      // const result = await post("api/ledger/post", payload);
+      // const result = await post("api/ledger/post", payload);
+      await postMutate(payload);
       await fetchData();
-      if (result !== undefined) {
-        setIsResponse(result);
-      }
+      // if (result !== undefined) {
+      //   setIsResponse(result);
+      // }
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error.message);
@@ -108,13 +123,35 @@ export default function Home(): ReactElement {
     if (getLoading) {
       console.log("Loading...");
     }
-    if (getData) {
-      console.log(getData);
+    if (
+      getData &&
+      getData.filter(
+        (el) => el.createdAt.split("T")[0] === todayUTC.split("T")[0]
+      )
+    ) {
+      console.log(
+        getData.filter(
+          (el) => el.createdAt.split("T")[0] === todayUTC.split("T")[0]
+        )
+      );
     }
     if (getError) {
       console.log(getError);
     }
   }, [getData, getLoading, getError]);
+
+  /** API POST state 확인 */
+  useEffect(() => {
+    if (postData) {
+      console.log(postData);
+    }
+    if (postLoading) {
+      console.log("Loading...");
+    }
+    if (postError) {
+      console.log(postError);
+    }
+  }, [postData, postLoading, postError]);
 
   return (
     // 여기서 h-screen은 매번 기입을 해야하는건가?
@@ -242,10 +279,10 @@ export default function Home(): ReactElement {
           </div>
           <button
             className={`${
-              getLoading ? "bg-gray-400" : "bg-blue-500"
+              getLoading || postLoading ? "bg-gray-400" : "bg-blue-500"
             }  text-white px-8 py-2 font-medium rounded-md mt-4`}
             type="submit"
-            disabled={getLoading}
+            disabled={getLoading || postLoading}
           >
             등록
           </button>
