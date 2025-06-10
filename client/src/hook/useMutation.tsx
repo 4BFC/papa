@@ -1,18 +1,18 @@
 import { useState } from "react";
 
-const useMutation = <T, Request>(
-  type: (payload: Request) => Promise<T>
+const useMutation = <Response, Request>(
+  type: (payload: Request) => Promise<Response>
 ): {
-  isData: T | undefined;
+  isData: Response | undefined;
   isLoading: boolean;
   isError: string;
-  mutate: (payload: Request) => Promise<T>;
+  mutate: (payload: Request) => Promise<Response>;
 } => {
-  const [isData, setData] = useState<T>();
+  const [isData, setData] = useState<Response>();
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isError, setError] = useState<string>("");
 
-  const mutate = async (payload: Request): Promise<T> => {
+  const mutate = async (payload: Request): Promise<Response> => {
     try {
       setLoading(true);
       const data = await type(payload);
