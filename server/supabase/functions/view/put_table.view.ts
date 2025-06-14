@@ -2,11 +2,40 @@ import { put_controller } from "../controller/index.ts";
 
 const supabase = new put_controller();
 
-const put_ledger_view = async (req: Request) => {
+const put_table_view = async (req: Request) => {
   const url = new URL(req.url);
+  /** only ledger */
   if (url.pathname.startsWith("/api/ledger/") && req.method === "PUT") {
     try {
-      const { data, error } = await supabase.handlePut(req);
+      const { data, error } = await supabase.handlePut(req, "ledger");
+      console.log("data check in view", data);
+
+      //RLS 위반 오류 처리, 단, rollback 데이터 제거,예외처리는 불가. 이를 Model에서 처리
+      if (error === "RLS_POLICY_VIOLATION" || !data || data.length === 0) {
+        return new Response(
+          JSON.stringify({
+            error: "Rollback data deleted, Access denied by RLS policy",
+          }),
+          { status: 403, headers: { "Content-Type": "application/json" } }
+        );
+      }
+
+      return new Response(JSON.stringify({ data, error }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      return new Response(JSON.stringify({ error: "Internal server error" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+  }
+  /** only payment */
+  if (url.pathname.startsWith("/api/payment/") && req.method === "PUT") {
+    try {
+      const { data, error } = await supabase.handlePut(req, "payment");
       console.log("data check in view", data);
 
       //RLS 위반 오류 처리, 단, rollback 데이터 제거,예외처리는 불가. 이를 Model에서 처리
@@ -39,4 +68,4 @@ const put_ledger_view = async (req: Request) => {
   });
 };
 
-export default put_ledger_view;
+export default put_table_view;

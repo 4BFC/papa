@@ -7,9 +7,9 @@ class post_controller {
     this.model = new post_table_model();
   }
 
-  async handlePost(req: Request) {
+  async handlePost(req: Request, table: string) {
     try {
-      const { data, error } = await this.model.post(req);
+      const { data, error } = await this.model.post(req, table);
       return { data, error };
     } catch (error) {
       return { error: error.message };

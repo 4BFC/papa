@@ -7,10 +7,15 @@ class get_controller {
     this.model = new get_table_model();
   }
 
-  async handleGetAll(req: Request) {
-    const { data, error } = await this.model.getAll();
+  async handleGetAll(req: Request, table: string) {
+    const { data, error } = await this.model.getAll(table);
     return { data, error };
   }
+
+  // async handleGetAllByPayment(req: Request) {
+  //   const { data, error } = await this.model.getAll("payment");
+  //   return { data, error };
+  // }
 }
 
 export default get_controller;

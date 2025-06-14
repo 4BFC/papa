@@ -6,7 +6,8 @@ class put_controller {
     this.model = new post_table_model();
   }
 
-  async handlePut(req: Request) {
+  /** only ledger */
+  async handlePut(req: Request, table: string) {
     try {
       const url = new URL(req.url);
       const id = url.pathname.split("/").pop();
@@ -16,7 +17,7 @@ class put_controller {
         return { error: "ID is Required" };
       }
 
-      const { data, error } = await this.model.put(req, id);
+      const { data, error } = await this.model.put(req, id, table);
       return { data, error };
     } catch (error) {
       return { error: error.message };
