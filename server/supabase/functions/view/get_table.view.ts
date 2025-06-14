@@ -4,13 +4,30 @@ console.log("This is ledger function");
 
 const supabase = new get_controller();
 
-const get_ledger_view = async (req: Request) => {
+const get_table_view = async (req: Request) => {
   const url = new URL(req.url);
   /**Get인 경우 동작 */
   // url.pathname === "/api_ledger" &&
   if (url.pathname === "/api/ledger" && req.method === "GET") {
     try {
-      const { data, error } = await supabase.handleGetAll(req);
+      const { data, error } = await supabase.handleGetAll(req, "ledger");
+      console.log("Fetched data:", data);
+      return new Response(JSON.stringify({ data, error }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      return new Response(JSON.stringify({ error: "Internal server error" }), {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+  }
+
+  if (url.pathname === "/api/payment" && req.method === "GET") {
+    try {
+      const { data, error } = await supabase.handleGetAll(req, "payment");
       console.log("Fetched data:", data);
       return new Response(JSON.stringify({ data, error }), {
         status: 200,
@@ -33,4 +50,4 @@ const get_ledger_view = async (req: Request) => {
   });
 };
 
-export default get_ledger_view;
+export default get_table_view;

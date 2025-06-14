@@ -6,9 +6,13 @@ const supabase = createClient(
 );
 
 class get_table_model {
-  async getAll() {
-    return await supabase.from("ledger").select("*");
+  async getAll(table: string) {
+    return await supabase.from(table).select("*");
   }
+
+  // async getAllByPayment() {
+  //   return await supabase.from("payment").select("");
+  // }
 
   async getById(id: string) {
     return await supabase.from("ledger").select("*").eq("id", id);

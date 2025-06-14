@@ -1,3 +1,3 @@
-export { default as get_ledger_view } from "./get_ledger.view.ts";
-export { default as post_ledger_view } from "./post_ledger.view.ts";
-export { default as put_ledger_view } from "./put_ledger.view.ts";
+export { default as get_table_view } from "./get_table.view.ts";
+export { default as post_table_view } from "./post_table.view.ts";
+export { default as put_table_view } from "./put_table.view.ts";
