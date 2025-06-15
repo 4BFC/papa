@@ -14,7 +14,17 @@ import { HeaderRow, DataRow } from "@/components";
 import { useFetch, useMutation } from "@/hook";
 import { get, post } from "@/api";
 import "@/api/client/axiosInterceptors";
-import { Calendar, X, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import {
+  Calendar,
+  X,
+  ChevronDown,
+  ChevronUp,
+  Loader2,
+  CreditCard,
+  Banknote,
+  // Check,
+  // CheckCheck,
+} from "lucide-react";
 
 // interface FormValues {
 //   item: string;
@@ -53,6 +63,7 @@ export default function Home(): ReactElement {
 
   const [isDateSlideOpen, setDateSlideOpen] = useState<boolean>(false);
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
+  const [isComplexPayment, setComplexPayment] = useState<boolean>(false);
   /** POST 임시 상태 관리 */
   // const [, setIsResponse] = useState<LedgerRequire | null>(null);
   /** 폼 상태 관리 && 데이터 */
@@ -157,7 +168,44 @@ export default function Home(): ReactElement {
     // 여기서 h-screen은 매번 기입을 해야하는건가?
     <div className="h-screen flex flex-col items-center justify-center">
       <div className="flex w-full justify-center items-center p-5 text-lg font-bold">
-        <div className="flex justify-end items-center w-1/3" />
+        <div className="flex justify-start items-center w-1/3">
+          <div
+            className={`relative flex justify-center items-center w-11 h-6 transition-colors duration-200 ${
+              isComplexPayment ? "bg-blue-200" : "bg-gray-200"
+            } rounded-full`}
+            onClick={() => {
+              setComplexPayment((prev) => !prev);
+              setHeaderActive(true);
+            }}
+          >
+            <span
+              className={`absolute left-0 w-4 h-4 rounded-full transform transition-transform duration-400 ease-in-out ${
+                isComplexPayment
+                  ? "translate-x-6 bg-blue-400"
+                  : "translate-x-1 bg-white"
+              } transition-colors`}
+            />
+          </div>
+
+          {/* <span className="flex justify-center items-center ml-2 relative w-7 h-5 text-green-500 text-sm">
+            <div
+              className={`flex justify-center items-center absolute inset-0 transition-opacity duration-200 ease-in-out ${
+                isComplexPayment ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              // <CheckCheck className="w-4 h-4" strokeWidth={3} />
+              단일
+            </div>
+            <div
+              className={`flex justify-center items-center absolute inset-0 transition-opacity duration-200 ease-in-out ${
+                isComplexPayment ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              // <Check className="w-4 h-4" strokeWidth={3} />
+              복합
+            </div>
+          </span> */}
+        </div>
         <span className="flex justify-center items-center w-1/3">{today}</span>
         <div className="flex justify-end items-center w-1/3">
           <span
@@ -169,16 +217,16 @@ export default function Home(): ReactElement {
         </div>
       </div>
       <div
-        className={`flex items-center justify-center w-full transition-all duration-300 ease-in-out
+        className={`flex items-center justify-center w-full transition-all duration-500 ease-in-out
           ${
             isHeaderActive
-              ? "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
-              : "max-h-[500px] opacity-100 transform scale-y-100 origin-top p-2"
+              ? "max-h-[500px] opacity-100 transform scale-y-100 origin-top p-2"
+              : "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
           }
         }`}
       >
         <form
-          className="flex flex-col items-center justify-center w-full"
+          className="flex flex-col items-center justify-center w-full gap-2"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="flex flex-col justify-center items-center gap-2 w-11/12">
@@ -274,6 +322,32 @@ export default function Home(): ReactElement {
                     {errors.costPrice.message}
                   </span>
                 )}
+              </div>
+            </div>
+          </div>
+          <div
+            className={`flex flex-col justify-center items-center w-11/12 transition-all duration-500 ease-in-out ${
+              isComplexPayment
+                ? "max-h-[500px] opacity-100 transform scale-y-100 origin-top"
+                : "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
+            }`}
+          >
+            <div className="flex flex-col justify-center items-center gap-1 w-full">
+              <div className="flex justify-center items-center w-full gap-1">
+                <CreditCard strokeWidth={2} className="text-blue-500" />
+                <span className="flex w-1/3">카드</span>
+                <input
+                  type="text"
+                  className="w-full p-2 border-1 border-gray-400 rounded"
+                />
+              </div>
+              <div className="flex justify-center items-center w-full gap-1 ">
+                <Banknote strokeWidth={2} className="text-green-500" />
+                <span className="flex w-1/3">현금</span>
+                <input
+                  type="text"
+                  className="w-full p-2 border-1 border-gray-400 rounded"
+                />
               </div>
             </div>
           </div>
