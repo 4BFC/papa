@@ -16,8 +16,8 @@ const DataRow = ({
     : [];
   const cardPayment = paymentForThisRow.find((el) => el.type === "card");
   const cashPayment = paymentForThisRow.find((el) => el.type === "cash");
-  console.log(cardPayment);
-  console.log(cashPayment);
+  // console.log(cardPayment);
+  // console.log(cashPayment);
   return (
     <>
       <div
