@@ -53,6 +53,17 @@ export default function Home(): ReactElement {
   );
 
   const {
+    isData: paymentData,
+    isLoading: paymentLoading,
+    isError: paymentError,
+    fetchData: paymentFetchData,
+    // 해당 get의 타입이 명시적이 않다.
+  } = useFetch<PaymentModel[]>(
+    () => get<PaymentDataResponse>("/api/payment/get"),
+    true
+  );
+
+  const {
     isData: postData,
     isLoading: postLoading,
     isError: postError,
@@ -86,6 +97,7 @@ export default function Home(): ReactElement {
   const handleActive = ({
     handle,
   }: {
+    // 해당 Dispatch는 어떤 역할인가?
     handle: Dispatch<SetStateAction<boolean>>;
   }): void => {
     handle((prev) => !prev);
@@ -115,6 +127,7 @@ export default function Home(): ReactElement {
       // const result = await post("api/ledger/post", payload);
       await postMutate(payload);
       await fetchData();
+      await paymentFetchData();
       // if (result !== undefined) {
       //   setIsResponse(result);
       // }
@@ -128,7 +141,7 @@ export default function Home(): ReactElement {
     }
   };
 
-  /** API GET state 확인 */
+  /** ledger API GET state 확인 */
   useEffect(() => {
     console.log(todayUTC);
     if (getLoading) {
@@ -150,6 +163,21 @@ export default function Home(): ReactElement {
       console.log(getError);
     }
   }, [getData, getLoading, getError]);
+
+  /** payment API GET state 확인 */
+  useEffect(() => {
+    console.log(todayUTC);
+    if (paymentLoading) {
+      console.log("Loading...");
+    }
+    if (paymentData) {
+      console.log(paymentData);
+      // console.log(typeof paymentData);
+    }
+    if (paymentError) {
+      console.log(paymentError);
+    }
+  }, [paymentData, paymentLoading, paymentError]);
 
   /** API POST state 확인 */
   useEffect(() => {
@@ -363,11 +391,16 @@ export default function Home(): ReactElement {
         </form>
       </div>
       <div className="py-2">
-        <button onClick={() => handleActive({ handle: setHeaderActive })}>
+        <button
+          onClick={() => {
+            handleActive({ handle: setHeaderActive });
+            setComplexPayment(false);
+          }}
+        >
           {isHeaderActive ? (
-            <ChevronDown className="w-5 h-5" />
-          ) : (
             <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
           )}
         </button>
       </div>
@@ -385,12 +418,15 @@ export default function Home(): ReactElement {
             </div>
           ) : (
             getData &&
+            paymentData &&
             getData
               .filter(
                 (el) =>
                   String(el.createdAt).split("T")[0] === todayUTC.split("T")[0]
               )
-              .map((item) => <DataRow key={item.id} data={item} />)
+              .map((item) => (
+                <DataRow key={item.id} data={item} payment={paymentData} />
+              ))
           )}
           {/* {getData &&
             getData.map((item) => <DataRow key={item.id} data={item} />)} */}
