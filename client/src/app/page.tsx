@@ -9,7 +9,12 @@ import {
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
-import { LedgerDataResponse, LedgerModel, LedgerRequire } from "@/types";
+import {
+  LedgerDataResponse,
+  LedgerModel,
+  LedgerRequire,
+  PaymentRequire,
+} from "@/types";
 import { HeaderRow, DataRow } from "@/components";
 import { useFetch, useMutation } from "@/hook";
 import { get, post } from "@/api";
@@ -26,12 +31,14 @@ import {
   // CheckCheck,
 } from "lucide-react";
 
-// interface FormValues {
-//   item: string;
-//   count: number;
-//   costPrice: number;
-//   salePrice: number;
+// export interface PaymentRequire {
+//   ledger_id: number;
+//   type: "card" | "cash";
+//   price: number;
+//   profit: number;
 // }
+
+// export type PaymentPostRequest = PaymentUnit[];
 
 export default function Home(): ReactElement {
   const today = new Date().toLocaleDateString("ko-KR", {
@@ -72,12 +79,42 @@ export default function Home(): ReactElement {
     post<LedgerDataResponse, LedgerRequire>("/api/ledger/post", payload)
   );
 
+  const {
+    isData: paymentPostData,
+    isLoading: paymentPostLoading,
+    isError: paymentPostError,
+    mutate: paymentPostMutate,
+  } = useMutation<PaymentDataResponse, PaymentRequire[]>((payload) =>
+    post<PaymentDataResponse, PaymentRequire[]>("/api/payment/post", payload)
+  );
+
+  // new Map을 사용해서 코드 간결화 필요.
+  const testPayment = async (): Promise<void> => {
+    const payload: PaymentRequire[] = [
+      {
+        ledgerId: 50,
+        type: "card",
+        price: 9000,
+        profit: 6300,
+      },
+      {
+        ledgerId: 50,
+        type: "cash",
+        price: 9000,
+        profit: 6300,
+      },
+    ];
+    const result = await paymentPostMutate(payload);
+    console.log("🎯result", result);
+  };
+
   const [isDateSlideOpen, setDateSlideOpen] = useState<boolean>(false);
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
   const [isComplexPayment, setComplexPayment] = useState<boolean>(false);
   /** POST 임시 상태 관리 */
   // const [, setIsResponse] = useState<LedgerRequire | null>(null);
   /** 폼 상태 관리 && 데이터 */
+  // 복합결제를 위해서 타입 확장성이 필요함.
   const {
     register,
     handleSubmit,
@@ -115,7 +152,9 @@ export default function Home(): ReactElement {
 
       /**profit 필드 추가 */
       const payload = {
-        ...data,
+        // ...data,
+        count: data.count,
+        item: data.item,
         profit,
         costPrice,
         salePrice,
@@ -126,11 +165,37 @@ export default function Home(): ReactElement {
       // const result = await post("api/ledger/post", payload);
       // const result = await post("api/ledger/post", payload);
       await postMutate(payload);
+
+      // 2. Payment 요청 준비
+      // const paymentPayload: PaymentUnit = {
+      //   ledger_id: 50,
+      //   type: "card",
+      //   price: 9000,
+      //   profit: 6300,
+      // };
+      // if (data.cardPrice) {
+      //   paymentPayload.pu✅sh({
+      //     ledger_id: 46,
+      //     type: "card",
+      //     price: Number(data.cardPrice),
+      //     profit: 100,
+      //   });
+      // }
+
+      // if (data.cashPrice) {
+      //   paymentPayload.push({
+      //     ledger_id: 46,
+      //     type: "cash",
+      //     price: Number(data.cashPrice),
+      //     profit: 100,
+      //   });
+      // }
+      // console.log("🎯paymentPayload", paymentPayload);
+      // const result = await paymentPostMutate(paymentPayload);
+      // console.log("🎯result", result);
+
       await fetchData();
       await paymentFetchData();
-      // if (result !== undefined) {
-      //   setIsResponse(result);
-      // }
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error.message);
@@ -192,9 +257,23 @@ export default function Home(): ReactElement {
     }
   }, [postData, postLoading, postError]);
 
+  /** API Payment POST state 확인 */
+  useEffect(() => {
+    if (paymentPostData) {
+      console.log(paymentPostData);
+    }
+    if (paymentPostLoading) {
+      console.log("Loading...");
+    }
+    if (paymentPostError) {
+      console.log(paymentPostError);
+    }
+  }, [paymentPostData, paymentPostLoading, paymentPostError]);
+
   return (
     // 여기서 h-screen은 매번 기입을 해야하는건가?
     <div className="h-screen flex flex-col items-center justify-center">
+      <button onClick={testPayment}>testPayment</button>
       <div className="flex w-full justify-center items-center p-5 text-lg font-bold">
         <div className="flex justify-start items-center w-1/3">
           <div
@@ -353,6 +432,7 @@ export default function Home(): ReactElement {
               </div>
             </div>
           </div>
+          {/* 다중 결제 추가 영역 */}
           <div
             className={`flex flex-col justify-center items-center w-11/12 transition-all duration-500 ease-in-out ${
               isComplexPayment
@@ -367,6 +447,8 @@ export default function Home(): ReactElement {
                 <input
                   type="text"
                   className="w-full p-2 border-1 border-gray-400 rounded"
+                  placeholder="카드 금액"
+                  {...register("cardPrice")}
                 />
               </div>
               <div className="flex justify-center items-center w-full gap-1 ">
@@ -375,6 +457,8 @@ export default function Home(): ReactElement {
                 <input
                   type="text"
                   className="w-full p-2 border-1 border-gray-400 rounded"
+                  placeholder="현금 금액"
+                  {...register("cashPrice")}
                 />
               </div>
             </div>
