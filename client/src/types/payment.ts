@@ -1,14 +1,14 @@
 export interface PaymentRequire {
-  type: boolean;
+  ledgerId: number;
+  type: string;
   price: number;
   profit: number;
-  updateAt: string;
-  createdAt: string;
 }
 
 export interface PaymentModel extends PaymentRequire {
   id: number;
-  ledgerId: number;
+  updateAt: string;
+  createdAt: string;
 }
 
 export interface PaymentDataResponse {

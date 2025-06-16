@@ -13,7 +13,10 @@ import {
   LedgerDataResponse,
   LedgerModel,
   LedgerRequire,
+  PaymentModel,
+  PaymentDataResponse,
   PaymentRequire,
+  FormRequire,
 } from "@/types";
 import { HeaderRow, DataRow } from "@/components";
 import { useFetch, useMutation } from "@/hook";
@@ -119,7 +122,7 @@ export default function Home(): ReactElement {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LedgerRequire>();
+  } = useForm<FormRequire>();
 
   const [isTax, setTax] = useState<boolean>(false);
 
