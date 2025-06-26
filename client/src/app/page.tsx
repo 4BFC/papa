@@ -91,26 +91,6 @@ export default function Home(): ReactElement {
     post<PaymentDataResponse, PaymentRequire[]>("/api/payment/post", payload)
   );
 
-  // new Map을 사용해서 코드 간결화 필요.
-  const testPayment = async (): Promise<void> => {
-    const payload: PaymentRequire[] = [
-      {
-        ledgerId: 50,
-        type: "card",
-        price: 9000,
-        profit: 6300,
-      },
-      {
-        ledgerId: 50,
-        type: "cash",
-        price: 9000,
-        profit: 6300,
-      },
-    ];
-    const result = await paymentPostMutate(payload);
-    console.log("🎯result", result);
-  };
-
   const [isDateSlideOpen, setDateSlideOpen] = useState<boolean>(false);
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
   const [isComplexPayment, setComplexPayment] = useState<boolean>(false);
@@ -167,18 +147,31 @@ export default function Home(): ReactElement {
       // 데이터에 required에 맞는 필드 추가 필요.
       // const result = await post("api/ledger/post", payload);
       // const result = await post("api/ledger/post", payload);
-      await postMutate(payload);
-
+      const ledgerResult = await postMutate(payload);
+      console.log("🎯ledgerResult", ledgerResult.data[0].id);
+      const ledgerId = ledgerResult.data[0].id;
       // 2. Payment 요청 준비
-      // const paymentPayload: PaymentUnit = {
-      //   ledger_id: 50,
-      //   type: "card",
-      //   price: 9000,
-      //   profit: 6300,
-      // };
+      if (!ledgerResult || !ledgerId) {
+        throw new Error("다중 결제 등록 실패");
+      }
+
+      const paymentPayload: PaymentRequire[] = [
+        {
+          ledgerId,
+          type: "card",
+          price: Number(data.cardPrice),
+          profit: 6300,
+        },
+        {
+          ledgerId,
+          type: "cash",
+          price: Number(data.cashPrice),
+          profit: 6300,
+        },
+      ];
       // if (data.cardPrice) {
-      //   paymentPayload.pu✅sh({
-      //     ledger_id: 46,
+      //   paymentPayload.push({
+      //     ledgerId: 46,
       //     type: "card",
       //     price: Number(data.cardPrice),
       //     profit: 100,
@@ -187,15 +180,15 @@ export default function Home(): ReactElement {
 
       // if (data.cashPrice) {
       //   paymentPayload.push({
-      //     ledger_id: 46,
+      //     ledgerId: 46,
       //     type: "cash",
       //     price: Number(data.cashPrice),
       //     profit: 100,
       //   });
       // }
-      // console.log("🎯paymentPayload", paymentPayload);
-      // const result = await paymentPostMutate(paymentPayload);
-      // console.log("🎯result", result);
+      console.log("🎯paymentPayload", paymentPayload);
+      const paymentResult = await paymentPostMutate(paymentPayload);
+      console.log("🎯paymentResult", paymentResult);
 
       await fetchData();
       await paymentFetchData();
@@ -276,7 +269,7 @@ export default function Home(): ReactElement {
   return (
     // 여기서 h-screen은 매번 기입을 해야하는건가?
     <div className="h-screen flex flex-col items-center justify-center">
-      <button onClick={testPayment}>testPayment</button>
+      {/* <button onClick={testPayment}>testPayment</button> */}
       <div className="flex w-full justify-center items-center p-5 text-lg font-bold">
         <div className="flex justify-start items-center w-1/3">
           <div
