@@ -1,10 +1,23 @@
 import { useState } from "react";
-import { LedgerModel } from "@/types";
+import { LedgerModel, PaymentModel } from "@/types";
 import { splitData, formatCurrencyData } from "@/utils";
 
-const DataRow = ({ data }: { data: LedgerModel }): React.ReactElement => {
+const DataRow = ({
+  data,
+  payment,
+}: {
+  data: LedgerModel;
+  payment: PaymentModel[];
+}): React.ReactElement => {
   const [isButtonActive, setButtonActive] = useState<boolean>(true);
 
+  const paymentForThisRow = Array.isArray(payment)
+    ? payment.filter((el) => el.ledgerId === data.id)
+    : [];
+  const cardPayment = paymentForThisRow.find((el) => el.type === "card");
+  const cashPayment = paymentForThisRow.find((el) => el.type === "cash");
+  // console.log(cardPayment);
+  // console.log(cashPayment);
   return (
     <>
       <div
@@ -25,17 +38,23 @@ const DataRow = ({ data }: { data: LedgerModel }): React.ReactElement => {
           <div className="w-7/100 py-3 px-0 text-center">{data.count}</div>
           <div className="flex flex-col w-26/100 py-3 px-2 text-right">
             {formatCurrencyData(data.salePrice, "ko-KR")}
-            <div className="flex flex-col justify-between text-xs text-gray-600">
-              <span>카드 16,000</span>
-              <span>현금 16,000</span>
-            </div>
+            {paymentForThisRow.length > 0 && (
+              <div className="flex flex-col justify-between text-xs text-gray-600">
+                <span>
+                  카드 {formatCurrencyData(cardPayment?.price ?? 0, "ko-KR")}
+                </span>
+                <span>
+                  현금 {formatCurrencyData(cashPayment?.price ?? 0, "ko-KR")}
+                </span>
+              </div>
+            )}
           </div>
           <div className="flex flex-col w-26/100 py-3 px-1 text-right">
             {formatCurrencyData(data.costPrice, "ko-KR")}
-            <div className="flex flex-col justify-between text-xs text-gray-600">
+            {/* <div className="flex flex-col justify-between text-xs text-gray-600">
               <span>카드 16,000</span>
               <span>현금 16,000</span>
-            </div>
+            </div> */}
           </div>
           <div className="flex flex-col w-23/100 py-3 px-1 text-right text-green-600 font-medium">
             {formatCurrencyData(data.profit, "ko-KR")}

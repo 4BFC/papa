@@ -42,7 +42,7 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
     /**응답 데이터 변환: 현재는 불필요 */
-    console.log("check response");
+    // console.log("check response");
     if (response.data) {
       response.data = transformResponseData(response.data);
     }

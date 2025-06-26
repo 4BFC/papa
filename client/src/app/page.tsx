@@ -9,19 +9,39 @@ import {
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
-import { LedgerDataResponse, LedgerModel, LedgerRequire } from "@/types";
+import {
+  LedgerDataResponse,
+  LedgerModel,
+  LedgerRequire,
+  PaymentModel,
+  PaymentDataResponse,
+  PaymentRequire,
+  FormRequire,
+} from "@/types";
 import { HeaderRow, DataRow } from "@/components";
 import { useFetch, useMutation } from "@/hook";
 import { get, post } from "@/api";
 import "@/api/client/axiosInterceptors";
-import { Calendar, X, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import {
+  Calendar,
+  X,
+  ChevronDown,
+  ChevronUp,
+  Loader2,
+  CreditCard,
+  Banknote,
+  // Check,
+  // CheckCheck,
+} from "lucide-react";
 
-// interface FormValues {
-//   item: string;
-//   count: number;
-//   costPrice: number;
-//   salePrice: number;
+// export interface PaymentRequire {
+//   ledger_id: number;
+//   type: "card" | "cash";
+//   price: number;
+//   profit: number;
 // }
+
+// export type PaymentPostRequest = PaymentUnit[];
 
 export default function Home(): ReactElement {
   const today = new Date().toLocaleDateString("ko-KR", {
@@ -43,6 +63,17 @@ export default function Home(): ReactElement {
   );
 
   const {
+    isData: paymentData,
+    isLoading: paymentLoading,
+    isError: paymentError,
+    fetchData: paymentFetchData,
+    // 해당 get의 타입이 명시적이 않다.
+  } = useFetch<PaymentModel[]>(
+    () => get<PaymentDataResponse>("/api/payment/get"),
+    true
+  );
+
+  const {
     isData: postData,
     isLoading: postLoading,
     isError: postError,
@@ -51,16 +82,27 @@ export default function Home(): ReactElement {
     post<LedgerDataResponse, LedgerRequire>("/api/ledger/post", payload)
   );
 
+  const {
+    isData: paymentPostData,
+    isLoading: paymentPostLoading,
+    isError: paymentPostError,
+    mutate: paymentPostMutate,
+  } = useMutation<PaymentDataResponse, PaymentRequire[]>((payload) =>
+    post<PaymentDataResponse, PaymentRequire[]>("/api/payment/post", payload)
+  );
+
   const [isDateSlideOpen, setDateSlideOpen] = useState<boolean>(false);
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
+  const [isComplexPayment, setComplexPayment] = useState<boolean>(false);
   /** POST 임시 상태 관리 */
   // const [, setIsResponse] = useState<LedgerRequire | null>(null);
   /** 폼 상태 관리 && 데이터 */
+  // 복합결제를 위해서 타입 확장성이 필요함.
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LedgerRequire>();
+  } = useForm<FormRequire>();
 
   const [isTax, setTax] = useState<boolean>(false);
 
@@ -75,12 +117,13 @@ export default function Home(): ReactElement {
   const handleActive = ({
     handle,
   }: {
+    // 해당 Dispatch는 어떤 역할인가?
     handle: Dispatch<SetStateAction<boolean>>;
   }): void => {
     handle((prev) => !prev);
   };
 
-  const onSubmit = async (data: LedgerRequire): Promise<void> => {
+  const onSubmit = async (data: FormRequire): Promise<void> => {
     try {
       const costPrice = data.costPrice * data.count;
       const salePrice = data.salePrice * data.count;
@@ -92,7 +135,9 @@ export default function Home(): ReactElement {
 
       /**profit 필드 추가 */
       const payload = {
-        ...data,
+        // ...data,
+        count: data.count,
+        item: data.item,
         profit,
         costPrice,
         salePrice,
@@ -102,11 +147,51 @@ export default function Home(): ReactElement {
       // 데이터에 required에 맞는 필드 추가 필요.
       // const result = await post("api/ledger/post", payload);
       // const result = await post("api/ledger/post", payload);
-      await postMutate(payload);
-      await fetchData();
-      // if (result !== undefined) {
-      //   setIsResponse(result);
+      const ledgerResult = await postMutate(payload);
+      console.log("🎯ledgerResult", ledgerResult.data[0].id);
+      const ledgerId = ledgerResult.data[0].id;
+      // 2. Payment 요청 준비
+      if (!ledgerResult || !ledgerId) {
+        throw new Error("다중 결제 등록 실패");
+      }
+
+      const paymentPayload: PaymentRequire[] = [
+        {
+          ledgerId,
+          type: "card",
+          price: Number(data.cardPrice),
+          profit: 6300,
+        },
+        {
+          ledgerId,
+          type: "cash",
+          price: Number(data.cashPrice),
+          profit: 6300,
+        },
+      ];
+      // if (data.cardPrice) {
+      //   paymentPayload.push({
+      //     ledgerId: 46,
+      //     type: "card",
+      //     price: Number(data.cardPrice),
+      //     profit: 100,
+      //   });
       // }
+
+      // if (data.cashPrice) {
+      //   paymentPayload.push({
+      //     ledgerId: 46,
+      //     type: "cash",
+      //     price: Number(data.cashPrice),
+      //     profit: 100,
+      //   });
+      // }
+      console.log("🎯paymentPayload", paymentPayload);
+      const paymentResult = await paymentPostMutate(paymentPayload);
+      console.log("🎯paymentResult", paymentResult);
+
+      await fetchData();
+      await paymentFetchData();
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error.message);
@@ -117,7 +202,7 @@ export default function Home(): ReactElement {
     }
   };
 
-  /** API GET state 확인 */
+  /** ledger API GET state 확인 */
   useEffect(() => {
     console.log(todayUTC);
     if (getLoading) {
@@ -140,6 +225,21 @@ export default function Home(): ReactElement {
     }
   }, [getData, getLoading, getError]);
 
+  /** payment API GET state 확인 */
+  useEffect(() => {
+    console.log(todayUTC);
+    if (paymentLoading) {
+      console.log("Loading...");
+    }
+    if (paymentData) {
+      console.log(paymentData);
+      // console.log(typeof paymentData);
+    }
+    if (paymentError) {
+      console.log(paymentError);
+    }
+  }, [paymentData, paymentLoading, paymentError]);
+
   /** API POST state 확인 */
   useEffect(() => {
     if (postData) {
@@ -153,11 +253,62 @@ export default function Home(): ReactElement {
     }
   }, [postData, postLoading, postError]);
 
+  /** API Payment POST state 확인 */
+  useEffect(() => {
+    if (paymentPostData) {
+      console.log(paymentPostData);
+    }
+    if (paymentPostLoading) {
+      console.log("Loading...");
+    }
+    if (paymentPostError) {
+      console.log(paymentPostError);
+    }
+  }, [paymentPostData, paymentPostLoading, paymentPostError]);
+
   return (
     // 여기서 h-screen은 매번 기입을 해야하는건가?
     <div className="h-screen flex flex-col items-center justify-center">
+      {/* <button onClick={testPayment}>testPayment</button> */}
       <div className="flex w-full justify-center items-center p-5 text-lg font-bold">
-        <div className="flex justify-end items-center w-1/3" />
+        <div className="flex justify-start items-center w-1/3">
+          <div
+            className={`relative flex justify-center items-center w-11 h-6 transition-colors duration-200 ${
+              isComplexPayment ? "bg-blue-200" : "bg-gray-200"
+            } rounded-full`}
+            onClick={() => {
+              setComplexPayment((prev) => !prev);
+              setHeaderActive(true);
+            }}
+          >
+            <span
+              className={`absolute left-0 w-4 h-4 rounded-full transform transition-transform duration-400 ease-in-out ${
+                isComplexPayment
+                  ? "translate-x-6 bg-blue-400"
+                  : "translate-x-1 bg-white"
+              } transition-colors`}
+            />
+          </div>
+
+          {/* <span className="flex justify-center items-center ml-2 relative w-7 h-5 text-green-500 text-sm">
+            <div
+              className={`flex justify-center items-center absolute inset-0 transition-opacity duration-200 ease-in-out ${
+                isComplexPayment ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              // <CheckCheck className="w-4 h-4" strokeWidth={3} />
+              단일
+            </div>
+            <div
+              className={`flex justify-center items-center absolute inset-0 transition-opacity duration-200 ease-in-out ${
+                isComplexPayment ? "opacity-0" : "opacity-100"
+              }`}
+            >
+              // <Check className="w-4 h-4" strokeWidth={3} />
+              복합
+            </div>
+          </span> */}
+        </div>
         <span className="flex justify-center items-center w-1/3">{today}</span>
         <div className="flex justify-end items-center w-1/3">
           <span
@@ -169,16 +320,16 @@ export default function Home(): ReactElement {
         </div>
       </div>
       <div
-        className={`flex items-center justify-center w-full transition-all duration-300 ease-in-out
+        className={`flex items-center justify-center w-full transition-all duration-500 ease-in-out
           ${
             isHeaderActive
-              ? "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
-              : "max-h-[500px] opacity-100 transform scale-y-100 origin-top p-2"
+              ? "max-h-[500px] opacity-100 transform scale-y-100 origin-top p-2"
+              : "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
           }
         }`}
       >
         <form
-          className="flex flex-col items-center justify-center w-full"
+          className="flex flex-col items-center justify-center w-full gap-2"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="flex flex-col justify-center items-center gap-2 w-11/12">
@@ -277,6 +428,37 @@ export default function Home(): ReactElement {
               </div>
             </div>
           </div>
+          {/* 다중 결제 추가 영역 */}
+          <div
+            className={`flex flex-col justify-center items-center w-11/12 transition-all duration-500 ease-in-out ${
+              isComplexPayment
+                ? "max-h-[500px] opacity-100 transform scale-y-100 origin-top"
+                : "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
+            }`}
+          >
+            <div className="flex flex-col justify-center items-center gap-1 w-full">
+              <div className="flex justify-center items-center w-full gap-1">
+                <CreditCard strokeWidth={2} className="text-blue-500" />
+                <span className="flex w-1/3">카드</span>
+                <input
+                  type="text"
+                  className="w-full p-2 border-1 border-gray-400 rounded"
+                  placeholder="카드 금액"
+                  {...register("cardPrice")}
+                />
+              </div>
+              <div className="flex justify-center items-center w-full gap-1 ">
+                <Banknote strokeWidth={2} className="text-green-500" />
+                <span className="flex w-1/3">현금</span>
+                <input
+                  type="text"
+                  className="w-full p-2 border-1 border-gray-400 rounded"
+                  placeholder="현금 금액"
+                  {...register("cashPrice")}
+                />
+              </div>
+            </div>
+          </div>
           <button
             className={`${
               getLoading || postLoading ? "bg-gray-400" : "bg-blue-500"
@@ -289,11 +471,16 @@ export default function Home(): ReactElement {
         </form>
       </div>
       <div className="py-2">
-        <button onClick={() => handleActive({ handle: setHeaderActive })}>
+        <button
+          onClick={() => {
+            handleActive({ handle: setHeaderActive });
+            setComplexPayment(false);
+          }}
+        >
           {isHeaderActive ? (
-            <ChevronDown className="w-5 h-5" />
-          ) : (
             <ChevronUp className="w-5 h-5" />
+          ) : (
+            <ChevronDown className="w-5 h-5" />
           )}
         </button>
       </div>
@@ -311,12 +498,15 @@ export default function Home(): ReactElement {
             </div>
           ) : (
             getData &&
+            paymentData &&
             getData
               .filter(
                 (el) =>
                   String(el.createdAt).split("T")[0] === todayUTC.split("T")[0]
               )
-              .map((item) => <DataRow key={item.id} data={item} />)
+              .map((item) => (
+                <DataRow key={item.id} data={item} payment={paymentData} />
+              ))
           )}
           {/* {getData &&
             getData.map((item) => <DataRow key={item.id} data={item} />)} */}
