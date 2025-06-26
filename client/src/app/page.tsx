@@ -123,7 +123,7 @@ export default function Home(): ReactElement {
     handle((prev) => !prev);
   };
 
-  const onSubmit = async (data: LedgerRequire): Promise<void> => {
+  const onSubmit = async (data: FormRequire): Promise<void> => {
     try {
       const costPrice = data.costPrice * data.count;
       const salePrice = data.salePrice * data.count;
