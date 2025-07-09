@@ -18,7 +18,7 @@ import {
   PaymentRequire,
   FormRequire,
 } from "@/types";
-import { HeaderRow, DataRow } from "@/components";
+import { HeaderRow, DataRow, DateItem } from "@/components";
 import { useFetch, useMutation } from "@/hook";
 import { get, post } from "@/api";
 import "@/api/client/axiosInterceptors";
@@ -44,12 +44,15 @@ import {
 // export type PaymentPostRequest = PaymentUnit[];
 
 export default function Home(): ReactElement {
+  /** 표기 방법 */
   const today = new Date().toLocaleDateString("ko-KR", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   });
   const todayUTC = new Date().toISOString();
+
+  const [isSelectedDate, setSelectedDate] = useState<string | null>(null);
 
   const {
     isData: getData,
@@ -266,6 +269,12 @@ export default function Home(): ReactElement {
     }
   }, [paymentPostData, paymentPostLoading, paymentPostError]);
 
+  const dateList = useMemo(() => {
+    return Array.from(
+      new Set(getData?.map((el) => el.createdAt.split("T")[0]))
+    ).sort((a, b) => b.localeCompare(a));
+  }, [getData]);
+
   return (
     // 여기서 h-screen은 매번 기입을 해야하는건가?
     <div className="h-screen flex flex-col items-center justify-center">
@@ -309,7 +318,9 @@ export default function Home(): ReactElement {
             </div>
           </span> */}
         </div>
-        <span className="flex justify-center items-center w-1/3">{today}</span>
+        <span className="flex justify-center items-center w-1/3">
+          {isSelectedDate ? isSelectedDate : today}
+        </span>
         <div className="flex justify-end items-center w-1/3">
           <span
             className="flex justify-end items-center bg-blue-50 text-blue-600 rounded-md p-2"
@@ -500,9 +511,11 @@ export default function Home(): ReactElement {
             getData &&
             paymentData &&
             getData
-              .filter(
-                (el) =>
-                  String(el.createdAt).split("T")[0] === todayUTC.split("T")[0]
+              .filter((el) =>
+                isSelectedDate
+                  ? String(el.createdAt).split("T")[0] === isSelectedDate
+                  : String(el.createdAt).split("T")[0] ===
+                    todayUTC.split("T")[0]
               )
               .map((item) => (
                 <DataRow key={item.id} data={item} payment={paymentData} />
@@ -530,7 +543,7 @@ export default function Home(): ReactElement {
       )}
       {/* 우측 슬라이드 패널 */}
       <div
-        className={`flex flex-col fixed top-0 right-0 h-full w-[300px] bg-white transform transition-transform duration-300 ease-in-out z-50 p-2 gap-2 ${
+        className={`flex flex-col fixed top-0 right-0 h-full overflow-y-auto w-[300px] bg-white transform transition-transform duration-300 ease-in-out z-50 p-2 gap-2 ${
           isDateSlideOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -540,18 +553,16 @@ export default function Home(): ReactElement {
             <X className="w-5 h-5" />
           </div>
         </div>
-        <div className="flex flex-col w-full border-1 border-gray-300 rounded-lg justify-center gap-2 p-4">
-          <div className="flex flex-col justify-center gap-1">
-            <div className="text-lg font-bold">Date</div>
-            <div className="text-sm font-medium text-gray-600">
-              count 개 상품
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <div className="">총 이익</div>
-            <div className="font-bold text-green-600">이익 금액</div>
-          </div>
-        </div>
+
+        {dateList &&
+          dateList.map((date) => (
+            <DateItem
+              key={date}
+              date={date}
+              onClickDate={setSelectedDate}
+              onClickSlide={setDateSlideOpen}
+            />
+          ))}
       </div>
     </div>
   );
