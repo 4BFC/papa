@@ -33,7 +33,7 @@ import {
   // CheckCheck,
 } from "lucide-react";
 
-import { totalProfit, dateList } from "@/shared/utils";
+import { totalProfit, getUniqueSortedDates } from "@/shared/utils";
 
 // export interface PaymentRequire {
 //   ledger_id: number;
@@ -158,6 +158,7 @@ export default function Home(): ReactElement {
         throw new Error("다중 결제 등록 실패");
       }
 
+      //확인 필요
       const paymentPayload: PaymentRequire[] = [
         {
           ledgerId,
@@ -279,6 +280,7 @@ export default function Home(): ReactElement {
     // 여기서 h-screen은 매번 기입을 해야하는건가?
     <div className="h-screen flex flex-col items-center justify-center">
       {/* <button onClick={testPayment}>testPayment</button> */}
+      {/* Header */}
       <div className="flex w-full justify-center items-center p-5 text-lg font-bold">
         <div className="flex justify-start items-center w-1/3">
           <div
@@ -552,8 +554,8 @@ export default function Home(): ReactElement {
           </div>
         </div>
 
-        {dateList(getData) &&
-          dateList(getData).map((date) => (
+        {getUniqueSortedDates(getData) &&
+          getUniqueSortedDates(getData).map((date) => (
             <DateItem
               key={date}
               date={date}
