@@ -5,7 +5,6 @@ import {
   ReactElement,
   SetStateAction,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
@@ -33,6 +32,8 @@ import {
   // Check,
   // CheckCheck,
 } from "lucide-react";
+
+import { totalProfit, dateList } from "@/shared/utils";
 
 // export interface PaymentRequire {
 //   ledger_id: number;
@@ -108,13 +109,13 @@ export default function Home(): ReactElement {
 
   const [isTax, setTax] = useState<boolean>(false);
 
-  const totalProfit = useMemo(() => {
-    return getData
-      ? getData
-          .filter((el) => el.createdAt.split("T")[0] === todayUTC.split("T")[0])
-          .reduce((acc, item) => acc + (item.profit ?? 0), 0)
-      : 0;
-  }, [getData]);
+  // const totalProfit = useMemo(() => {
+  //   return getData
+  //     ? getData
+  //         .filter((el) => el.createdAt.split("T")[0] === todayUTC.split("T")[0])
+  //         .reduce((acc, item) => acc + (item.profit ?? 0), 0)
+  //     : 0;
+  // }, [getData]);
 
   const handleActive = ({
     handle,
@@ -268,11 +269,11 @@ export default function Home(): ReactElement {
     }
   }, [paymentPostData, paymentPostLoading, paymentPostError]);
 
-  const dateList = useMemo(() => {
-    return Array.from(
-      new Set(getData?.map((el) => el.createdAt.split("T")[0]))
-    ).sort((a, b) => b.localeCompare(a));
-  }, [getData]);
+  // const dateList = useMemo(() => {
+  //   return Array.from(
+  //     new Set(getData?.map((el) => el.createdAt.split("T")[0]))
+  //   ).sort((a, b) => b.localeCompare(a));
+  // }, [getData]);
 
   return (
     // 여기서 h-screen은 매번 기입을 해야하는건가?
@@ -525,7 +526,7 @@ export default function Home(): ReactElement {
       <footer className="fixed bottom-0 flex w-full rounded-t-3xl bg-gray-300 justify-center items-center p-5 text-gray-600 font-medium">
         <span>이득 총합&nbsp;</span>
         <span className="text-green-600 font-bold">
-          {totalProfit.toLocaleString()}
+          {totalProfit(getData, todayUTC).toLocaleString()}
         </span>
         원
       </footer>
@@ -551,8 +552,8 @@ export default function Home(): ReactElement {
           </div>
         </div>
 
-        {dateList &&
-          dateList.map((date) => (
+        {dateList(getData) &&
+          dateList(getData).map((date) => (
             <DateItem
               key={date}
               date={date}
