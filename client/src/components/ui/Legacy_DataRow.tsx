@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LedgerModel } from "@/types";
+import { LedgerModel } from "@/shared/types";
 
 const DataRow = ({ data }: { data: LedgerModel }): React.ReactElement => {
   const [isButtonActive, setButtonActive] = useState<boolean>(true);

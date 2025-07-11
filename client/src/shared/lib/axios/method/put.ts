@@ -1,4 +1,4 @@
-import { axiosInstance } from "@/api";
+import { axiosInstance } from "@/shared/lib/axios";
 
 const put = async <T>(url: string, body: T): Promise<T> => {
   try {

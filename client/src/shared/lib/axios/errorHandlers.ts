@@ -1,4 +1,4 @@
-import { ErrorHandler, TokenRefresher } from "@/types";
+import { ErrorHandler, TokenRefresher } from "@/shared/types";
 
 export const handleUnauthorized: ErrorHandler = () => {
   // 인증 에러 처리 로직

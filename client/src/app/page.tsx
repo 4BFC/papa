@@ -17,11 +17,11 @@ import {
   PaymentDataResponse,
   PaymentRequire,
   FormRequire,
-} from "@/types";
+} from "@/shared/types";
 import { HeaderRow, DataRow, DateItem } from "@/components";
-import { useFetch, useMutation } from "@/hook";
-import { get, post } from "@/api";
-import "@/api/client/axiosInterceptors";
+import { useFetch, useMutation } from "@/shared/lib/hook";
+import { get, post } from "@/shared/lib/axios";
+import "@/shared/lib/axios/axiosInterceptors";
 import {
   Calendar,
   X,
@@ -51,8 +51,6 @@ export default function Home(): ReactElement {
     day: "2-digit",
   });
   const todayUTC = new Date().toISOString();
-
-  const [isSelectedDate, setSelectedDate] = useState<string | null>(null);
 
   const {
     isData: getData,
@@ -94,6 +92,7 @@ export default function Home(): ReactElement {
     post<PaymentDataResponse, PaymentRequire[]>("/api/payment/post", payload)
   );
 
+  const [isSelectedDate, setSelectedDate] = useState<string | null>(null);
   const [isDateSlideOpen, setDateSlideOpen] = useState<boolean>(false);
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
   const [isComplexPayment, setComplexPayment] = useState<boolean>(false);
@@ -521,8 +520,6 @@ export default function Home(): ReactElement {
                 <DataRow key={item.id} data={item} payment={paymentData} />
               ))
           )}
-          {/* {getData &&
-            getData.map((item) => <DataRow key={item.id} data={item} />)} */}
         </div>
       </div>
       <footer className="fixed bottom-0 flex w-full rounded-t-3xl bg-gray-300 justify-center items-center p-5 text-gray-600 font-medium">

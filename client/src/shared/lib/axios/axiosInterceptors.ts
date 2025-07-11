@@ -8,11 +8,11 @@ import {
   handleNetworkError,
   handleLogout,
   refreshToken,
-} from "@/api/errorHandlers";
+} from "@/shared/lib/axios/errorHandlers";
 import {
   transformRequestData,
   transformResponseData,
-} from "@/api/transformers";
+} from "@/shared/lib/axios/transformers";
 
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {

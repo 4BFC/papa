@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { LedgerModel, PaymentModel } from "@/types";
-import { splitData, formatCurrencyData } from "@/utils";
+import { LedgerModel, PaymentModel } from "@/shared/types";
+import { splitData, formatCurrencyData } from "@/shared/utils";
 
 const DataRow = ({
   data,
