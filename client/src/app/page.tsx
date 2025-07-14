@@ -20,6 +20,7 @@ import {
 import { DateItem } from "@/components";
 import DataRow from "@/widgets/secretary/body/DataRow";
 import HeaderRow from "@/widgets/secretary/body/HeaderRow";
+import Footer from "@/widgets/secretary/footer/footer";
 import { useFetch, useMutation } from "@/shared/lib/hook";
 import { get, post } from "@/shared/lib/axios";
 import "@/shared/lib/axios/axiosInterceptors";
@@ -35,7 +36,8 @@ import {
   // CheckCheck,
 } from "lucide-react";
 
-import { totalProfit, getUniqueSortedDates } from "@/shared/utils";
+import { getUniqueSortedDates } from "@/shared/utils";
+// import { totalProfit, getUniqueSortedDates } from "@/shared/utils";
 
 // export interface PaymentRequire {
 //   ledger_id: number;
@@ -515,13 +517,14 @@ export default function Home(): ReactElement {
         </div>
       </div>
       {/* Footer */}
-      <footer className="fixed bottom-0 flex w-full rounded-t-3xl bg-gray-300 justify-center items-center p-5 text-gray-600 font-medium">
+      {/* <footer className="fixed bottom-0 flex w-full rounded-t-3xl bg-gray-300 justify-center items-center p-5 text-gray-600 font-medium">
         <span>이득 총합&nbsp;</span>
         <span className="text-green-600 font-bold">
           {getData ? totalProfit(getData, todayUTC).toLocaleString() : "0"}
         </span>
         원
-      </footer>
+      </footer> */}
+      <Footer data={getData} todayUTC={todayUTC} />
 
       {/* 슬라이드 */}
       {/* 오버레이 */}
