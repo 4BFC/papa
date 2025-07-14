@@ -17,7 +17,9 @@ import {
   PaymentRequire,
   FormRequire,
 } from "@/shared/types";
-import { HeaderRow, DataRow, DateItem } from "@/components";
+import { DateItem } from "@/components";
+import DataRow from "@/widgets/secretary/body/DataRow";
+import HeaderRow from "@/widgets/secretary/body/HeaderRow";
 import { useFetch, useMutation } from "@/shared/lib/hook";
 import { get, post } from "@/shared/lib/axios";
 import "@/shared/lib/axios/axiosInterceptors";
@@ -300,25 +302,6 @@ export default function Home(): ReactElement {
               } transition-colors`}
             />
           </div>
-
-          {/* <span className="flex justify-center items-center ml-2 relative w-7 h-5 text-green-500 text-sm">
-            <div
-              className={`flex justify-center items-center absolute inset-0 transition-opacity duration-200 ease-in-out ${
-                isComplexPayment ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              // <CheckCheck className="w-4 h-4" strokeWidth={3} />
-              단일
-            </div>
-            <div
-              className={`flex justify-center items-center absolute inset-0 transition-opacity duration-200 ease-in-out ${
-                isComplexPayment ? "opacity-0" : "opacity-100"
-              }`}
-            >
-              // <Check className="w-4 h-4" strokeWidth={3} />
-              복합
-            </div>
-          </span> */}
         </div>
         <span className="flex justify-center items-center w-1/3">
           {isSelectedDate ? isSelectedDate : today}
@@ -332,171 +315,177 @@ export default function Home(): ReactElement {
           </span>
         </div>
       </div>
-      <div
-        className={`flex items-center justify-center w-full transition-all duration-500 ease-in-out
+      {/* Input */}
+      <div className="flex flex-col items-center justify-center w-full">
+        {/* Input Form */}
+        <div
+          className={`flex items-center justify-center w-full transition-all duration-500 ease-in-out
           ${
             isHeaderActive
               ? "max-h-[500px] opacity-100 transform scale-y-100 origin-top p-2"
               : "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
           }
         }`}
-      >
-        <form
-          className="flex flex-col items-center justify-center w-full gap-2"
-          onSubmit={handleSubmit(onSubmit)}
         >
-          <div className="flex flex-col justify-center items-center gap-2 w-11/12">
-            <div className="flex justify-center items-center gap-1 w-full">
-              <div className="flex justify-end items-center w-full gap-2">
-                <div className="flex justify-center items-center gap-1">
-                  <span className="flex">카드</span>
-                  <input
-                    className="w-5 h-5"
-                    type="checkbox"
-                    onClick={() => {
-                      console.log("check isTax");
-                      setTax((prev) => !prev);
-                    }}
-                    {...register("type")}
-                  />
+          <form
+            className="flex flex-col items-center justify-center w-full gap-2"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <div className="flex flex-col justify-center items-center gap-2 w-11/12">
+              <div className="flex justify-center items-center gap-1 w-full">
+                <div className="flex justify-end items-center w-full gap-2">
+                  <div className="flex justify-center items-center gap-1">
+                    <span className="flex">카드</span>
+                    <input
+                      className="w-5 h-5"
+                      type="checkbox"
+                      onClick={() => {
+                        console.log("check isTax");
+                        setTax((prev) => !prev);
+                      }}
+                      {...register("type")}
+                    />
+                  </div>
+                  <div className="w-8/12">
+                    <input
+                      className="w-full p-2 border-1 border-gray-400 rounded"
+                      type="text"
+                      placeholder="상품"
+                      {...register("item", {
+                        required: "상품 기입은 필수 입니다.",
+                      })}
+                    />
+                    {errors.item && (
+                      <span className="text-red-500 text-xs">
+                        {errors.item.message}
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="w-8/12">
+                <div className="w-4/12">
                   <input
                     className="w-full p-2 border-1 border-gray-400 rounded"
-                    type="text"
-                    placeholder="상품"
-                    {...register("item", {
-                      required: "상품 기입은 필수 입니다.",
+                    type="number"
+                    placeholder="수량"
+                    {...register("count", {
+                      required: "수량 기입 필",
+                      valueAsNumber: true,
+                      min: {
+                        value: 1,
+                        message: "수량 1개 이상 필",
+                      },
                     })}
                   />
-                  {errors.item && (
+                  {errors.count && (
                     <span className="text-red-500 text-xs">
-                      {errors.item.message}
+                      {errors.count.message}
                     </span>
                   )}
                 </div>
               </div>
-              <div className="w-4/12">
-                <input
-                  className="w-full p-2 border-1 border-gray-400 rounded"
-                  type="number"
-                  placeholder="수량"
-                  {...register("count", {
-                    required: "수량 기입 필",
-                    valueAsNumber: true,
-                    min: {
-                      value: 1,
-                      message: "수량 1개 이상 필",
-                    },
-                  })}
-                />
-                {errors.count && (
-                  <span className="text-red-500 text-xs">
-                    {errors.count.message}
-                  </span>
-                )}
+              <div className="flex justify-center items-center gap-1 w-full">
+                <div className="w-full">
+                  <input
+                    className="w-full p-2 border-1 border-gray-400 rounded"
+                    type="number"
+                    placeholder="판매가"
+                    {...register("salePrice", {
+                      required: "판매가를 기입해야 합니다.",
+                      valueAsNumber: true,
+                      min: {
+                        value: 100,
+                        message: "가격은 100원 이상이어야 합니다.",
+                      },
+                    })}
+                  />
+                  {errors.salePrice && (
+                    <span className="text-red-500 text-xs">
+                      {errors.salePrice.message}
+                    </span>
+                  )}
+                </div>
+                <div className="w-full">
+                  {/* 원가 계산을 수량에 따라 값이 적용되게 코드를 구현할 필요 있음 */}
+                  <input
+                    className="w-full p-2 border-1 border-gray-400 rounded"
+                    type="number"
+                    placeholder="원가"
+                    {...register("costPrice", {
+                      required: "원가를 기입해야 합니다.",
+                      valueAsNumber: true,
+                      min: {
+                        value: 100,
+                        message: "가격은 100원 이상이어야 합니다.",
+                      },
+                    })}
+                  />
+                  {errors.costPrice && (
+                    <span className="text-red-500 text-xs">
+                      {errors.costPrice.message}
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="flex justify-center items-center gap-1 w-full">
-              <div className="w-full">
-                <input
-                  className="w-full p-2 border-1 border-gray-400 rounded"
-                  type="number"
-                  placeholder="판매가"
-                  {...register("salePrice", {
-                    required: "판매가를 기입해야 합니다.",
-                    valueAsNumber: true,
-                    min: {
-                      value: 100,
-                      message: "가격은 100원 이상이어야 합니다.",
-                    },
-                  })}
-                />
-                {errors.salePrice && (
-                  <span className="text-red-500 text-xs">
-                    {errors.salePrice.message}
-                  </span>
-                )}
-              </div>
-              <div className="w-full">
-                {/* 원가 계산을 수량에 따라 값이 적용되게 코드를 구현할 필요 있음 */}
-                <input
-                  className="w-full p-2 border-1 border-gray-400 rounded"
-                  type="number"
-                  placeholder="원가"
-                  {...register("costPrice", {
-                    required: "원가를 기입해야 합니다.",
-                    valueAsNumber: true,
-                    min: {
-                      value: 100,
-                      message: "가격은 100원 이상이어야 합니다.",
-                    },
-                  })}
-                />
-                {errors.costPrice && (
-                  <span className="text-red-500 text-xs">
-                    {errors.costPrice.message}
-                  </span>
-                )}
+            {/* 다중 결제 추가 영역 */}
+            <div
+              className={`flex flex-col justify-center items-center w-11/12 transition-all duration-500 ease-in-out ${
+                isComplexPayment
+                  ? "max-h-[500px] opacity-100 transform scale-y-100 origin-top"
+                  : "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
+              }`}
+            >
+              <div className="flex flex-col justify-center items-center gap-1 w-full">
+                <div className="flex justify-center items-center w-full gap-1">
+                  <CreditCard strokeWidth={2} className="text-blue-500" />
+                  <span className="flex w-1/3">카드</span>
+                  <input
+                    type="text"
+                    className="w-full p-2 border-1 border-gray-400 rounded"
+                    placeholder="카드 금액"
+                    {...register("cardPrice")}
+                  />
+                </div>
+                <div className="flex justify-center items-center w-full gap-1 ">
+                  <Banknote strokeWidth={2} className="text-green-500" />
+                  <span className="flex w-1/3">현금</span>
+                  <input
+                    type="text"
+                    className="w-full p-2 border-1 border-gray-400 rounded"
+                    placeholder="현금 금액"
+                    {...register("cashPrice")}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-          {/* 다중 결제 추가 영역 */}
-          <div
-            className={`flex flex-col justify-center items-center w-11/12 transition-all duration-500 ease-in-out ${
-              isComplexPayment
-                ? "max-h-[500px] opacity-100 transform scale-y-100 origin-top"
-                : "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
-            }`}
-          >
-            <div className="flex flex-col justify-center items-center gap-1 w-full">
-              <div className="flex justify-center items-center w-full gap-1">
-                <CreditCard strokeWidth={2} className="text-blue-500" />
-                <span className="flex w-1/3">카드</span>
-                <input
-                  type="text"
-                  className="w-full p-2 border-1 border-gray-400 rounded"
-                  placeholder="카드 금액"
-                  {...register("cardPrice")}
-                />
-              </div>
-              <div className="flex justify-center items-center w-full gap-1 ">
-                <Banknote strokeWidth={2} className="text-green-500" />
-                <span className="flex w-1/3">현금</span>
-                <input
-                  type="text"
-                  className="w-full p-2 border-1 border-gray-400 rounded"
-                  placeholder="현금 금액"
-                  {...register("cashPrice")}
-                />
-              </div>
-            </div>
-          </div>
+            <button
+              className={`${
+                getLoading || postLoading ? "bg-gray-400" : "bg-blue-500"
+              }  text-white px-8 py-2 font-medium rounded-md mt-4`}
+              type="submit"
+              disabled={getLoading || postLoading}
+            >
+              등록
+            </button>
+          </form>
+        </div>
+        {/* Input Form 접기 버튼 */}
+        <div className="py-2">
           <button
-            className={`${
-              getLoading || postLoading ? "bg-gray-400" : "bg-blue-500"
-            }  text-white px-8 py-2 font-medium rounded-md mt-4`}
-            type="submit"
-            disabled={getLoading || postLoading}
+            onClick={() => {
+              handleActive({ handle: setHeaderActive });
+              setComplexPayment(false);
+            }}
           >
-            등록
+            {isHeaderActive ? (
+              <ChevronUp className="w-5 h-5" />
+            ) : (
+              <ChevronDown className="w-5 h-5" />
+            )}
           </button>
-        </form>
+        </div>
       </div>
-      <div className="py-2">
-        <button
-          onClick={() => {
-            handleActive({ handle: setHeaderActive });
-            setComplexPayment(false);
-          }}
-        >
-          {isHeaderActive ? (
-            <ChevronUp className="w-5 h-5" />
-          ) : (
-            <ChevronDown className="w-5 h-5" />
-          )}
-        </button>
-      </div>
+      {/* Body */}
       <div className="flex flex-col h-screen w-full bg-gray-200 overflow-y-auto pb-16">
         <div className="flex-1 overflow-y-auto w-full">
           {/* 헤더 : component로 분리 필요 */}
@@ -525,6 +514,7 @@ export default function Home(): ReactElement {
           )}
         </div>
       </div>
+      {/* Footer */}
       <footer className="fixed bottom-0 flex w-full rounded-t-3xl bg-gray-300 justify-center items-center p-5 text-gray-600 font-medium">
         <span>이득 총합&nbsp;</span>
         <span className="text-green-600 font-bold">

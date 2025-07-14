@@ -35,6 +35,8 @@
       "@/shared/lib/*": ["./src/shared/lib/*"],
       "@/shared/lib/hook/*": ["./src/shared/lib/hook/*"],
       "@/shared/lib/axios/*": ["./src/shared/lib/axios/*"],
+      "@/features/*": ["./src/features/*"],
+      "@/widgets/*": ["./src/widgets/*"],
       "@/api/*": ["./src/api/*"],
       "@/api/client/*": ["./src/api/client/*"],
       "@/api/server/*": ["./src/api/server/*"],

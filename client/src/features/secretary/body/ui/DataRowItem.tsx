@@ -1,29 +1,22 @@
-import { useState } from "react";
 import { LedgerModel, PaymentModel } from "@/shared/types";
 import { splitData, formatCurrencyData } from "@/shared/utils";
 
-const DataRow = ({
+const DataRowItem = ({
   data,
-  payment,
+  cardPayment,
+  cashPayment,
+  isButtonActive,
+  onToggle,
 }: {
   data: LedgerModel;
-  payment: PaymentModel[];
+  cardPayment?: PaymentModel;
+  cashPayment?: PaymentModel;
+  isButtonActive: boolean;
+  onToggle: () => void;
 }): React.ReactElement => {
-  const [isButtonActive, setButtonActive] = useState<boolean>(true);
-
-  const paymentForThisRow = Array.isArray(payment)
-    ? payment.filter((el) => el.ledgerId === data.id)
-    : [];
-  const cardPayment = paymentForThisRow.find((el) => el.type === "card");
-  const cashPayment = paymentForThisRow.find((el) => el.type === "cash");
-  // console.log(cardPayment);
-  // console.log(cashPayment);
   return (
     <>
-      <div
-        className="overflow-x-auto"
-        onClick={() => setButtonActive((prev) => !prev)}
-      >
+      <div className="overflow-x-auto" onClick={onToggle}>
         <div
           className={`w-full flex justify-center items-center text-sm font-sans border-b border-gray-200 ${
             data.type ? "bg-blue-50" : "bg-white"
@@ -38,7 +31,7 @@ const DataRow = ({
           <div className="w-7/100 py-3 px-0 text-center">{data.count}</div>
           <div className="flex flex-col w-26/100 py-3 px-2 text-right">
             {formatCurrencyData(data.salePrice, "ko-KR")}
-            {paymentForThisRow.length > 0 && (
+            {(cardPayment || cashPayment) && (
               <div className="flex flex-col justify-between text-xs text-gray-600">
                 <span>
                   카드 {formatCurrencyData(cardPayment?.price ?? 0, "ko-KR")}
@@ -103,4 +96,4 @@ const DataRow = ({
   );
 };
 
-export default DataRow;
+export default DataRowItem;
