@@ -44,10 +44,6 @@ const DataRowItem = ({
           </div>
           <div className="flex flex-col w-26/100 py-3 px-1 text-right">
             {formatCurrencyData(data.costPrice, "ko-KR")}
-            {/* <div className="flex flex-col justify-between text-xs text-gray-600">
-              <span>카드 16,000</span>
-              <span>현금 16,000</span>
-            </div> */}
           </div>
           <div className="flex flex-col w-23/100 py-3 px-1 text-right text-green-600 font-medium">
             {formatCurrencyData(data.profit, "ko-KR")}
@@ -70,9 +66,6 @@ const DataRowItem = ({
             <button className="w-full bg-red-400 text-white py-2 rounded-md">
               삭제
             </button>
-            {/* <button className="w-full bg-red-500 text-white py-2 rounded-md">
-              복합 결제
-            </button> */}
           </div>
           <div className="text-xs text-gray-600">
             작성일 :{" "}
