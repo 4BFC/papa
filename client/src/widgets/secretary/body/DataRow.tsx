@@ -1,5 +1,6 @@
 import useLedgerRowState from "@/features/secretary/body/model/useLedgerRowState";
 import DataRowItem from "@/features/secretary/body/ui/DataRowItem";
+import { LedgerModel, PaymentModel } from "@/shared/types";
 
 const DataRow = ({
   data,
