@@ -1,8 +1,8 @@
 "use client";
 
-import { useFetch } from "@/hook";
-import { get } from "@/api";
-import { LedgerModel } from "@/types";
+import { useFetch } from "@/shared/lib/hook";
+import { get } from "@/shared/lib/axios";
+import { LedgerModel } from "@/shared/types";
 import { useEffect } from "react";
 
 const Test = (): React.ReactNode => {

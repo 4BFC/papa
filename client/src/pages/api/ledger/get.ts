@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { axiosInstanceServer } from "@/api";
+import { axiosInstanceServer } from "@/shared/lib/axios";
 //import { corsMiddleware } from "@/utils/cors";
 
 const get = async (

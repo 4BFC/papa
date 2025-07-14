@@ -1,4 +1,4 @@
-import { axiosInstance } from "@/api";
+import { axiosInstance } from "@/shared/lib/axios";
 
 const post = async <ResponseType, BodyType>(
   url: string,
