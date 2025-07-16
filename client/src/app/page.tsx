@@ -18,8 +18,8 @@ import {
   FormRequire,
 } from "@/shared/types";
 import { DateItem } from "@/components";
-import DataRow from "@/widgets/secretary/body/DataRow";
-import HeaderRow from "@/widgets/secretary/body/HeaderRow";
+import DataRowListContainer from "@/widgets/secretary/body/container/DataRowListContainer";
+import Footer from "@/widgets/secretary/footer/presentational/Footer";
 import { useFetch, useMutation } from "@/shared/lib/hook";
 import { get, post } from "@/shared/lib/axios";
 import "@/shared/lib/axios/axiosInterceptors";
@@ -28,14 +28,15 @@ import {
   X,
   ChevronDown,
   ChevronUp,
-  Loader2,
+  // Loader2,
   CreditCard,
   Banknote,
   // Check,
   // CheckCheck,
 } from "lucide-react";
 
-import { totalProfit, getUniqueSortedDates } from "@/shared/utils";
+import { getUniqueSortedDates } from "@/shared/utils";
+// import { totalProfit, getUniqueSortedDates } from "@/shared/utils";
 
 // export interface PaymentRequire {
 //   ledger_id: number;
@@ -281,7 +282,6 @@ export default function Home(): ReactElement {
   return (
     // 여기서 h-screen은 매번 기입을 해야하는건가?
     <div className="h-screen flex flex-col items-center justify-center">
-      {/* <button onClick={testPayment}>testPayment</button> */}
       {/* Header */}
       <div className="flex w-full justify-center items-center p-5 text-lg font-bold">
         <div className="flex justify-start items-center w-1/3">
@@ -486,42 +486,14 @@ export default function Home(): ReactElement {
         </div>
       </div>
       {/* Body */}
-      <div className="flex flex-col h-screen w-full bg-gray-200 overflow-y-auto pb-16">
-        <div className="flex-1 overflow-y-auto w-full">
-          {/* 헤더 : component로 분리 필요 */}
-          <HeaderRow />
-          {/* 데이터 행 : 기능 구현 후 componet로 분리 필요 */}
-          {getLoading ? (
-            <div className="flex flex-col justify-center items-center h-full gap-3">
-              <Loader2 className="w-10 h-10 animate-spin text-green-600" />
-              <span className="text-sm font-medium text-gray-600">
-                로딩 중입니다...
-              </span>
-            </div>
-          ) : (
-            getData &&
-            paymentData &&
-            getData
-              .filter((el) =>
-                isSelectedDate
-                  ? String(el.createdAt).split("T")[0] === isSelectedDate
-                  : String(el.createdAt).split("T")[0] ===
-                    todayUTC.split("T")[0]
-              )
-              .map((item) => (
-                <DataRow key={item.id} data={item} payment={paymentData} />
-              ))
-          )}
-        </div>
-      </div>
-      {/* Footer */}
-      <footer className="fixed bottom-0 flex w-full rounded-t-3xl bg-gray-300 justify-center items-center p-5 text-gray-600 font-medium">
-        <span>이득 총합&nbsp;</span>
-        <span className="text-green-600 font-bold">
-          {getData ? totalProfit(getData, todayUTC).toLocaleString() : "0"}
-        </span>
-        원
-      </footer>
+      <DataRowListContainer
+        data={getData ?? []}
+        paymentData={paymentData ?? []}
+        getLoading={getLoading}
+        isSelectedDate={isSelectedDate ?? ""}
+        todayUTC={todayUTC}
+      />
+      <Footer data={getData ?? []} todayUTC={todayUTC} />
 
       {/* 슬라이드 */}
       {/* 오버레이 */}
