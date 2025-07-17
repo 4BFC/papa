@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   UseFormRegister,
   FieldErrors,
-  SubmitHandler,
+  UseFormHandleSubmit,
   useForm,
+  SubmitHandler,
 } from "react-hook-form";
 import {
   FormRequire,
@@ -22,11 +23,11 @@ const useInputForm = (
   paymentFetchData: () => void
 ): {
   isTax: boolean;
-  setTax: (value: boolean) => void;
+  setTax: Dispatch<SetStateAction<boolean>>;
   register: UseFormRegister<FormRequire>;
-  handleSubmit: SubmitHandler<FormRequire>;
+  handleSubmit: UseFormHandleSubmit<FormRequire>;
   errors: FieldErrors<FormRequire>;
-  onSubmit: (data: FormRequire) => Promise<void>;
+  onSubmit: SubmitHandler<FormRequire>;
 } => {
   const [isTax, setTax] = useState<boolean>(false);
 
@@ -36,7 +37,7 @@ const useInputForm = (
     formState: { errors },
   } = useForm<FormRequire>();
 
-  const onSubmit = async (data: FormRequire): Promise<void> => {
+  const onSubmit: SubmitHandler<FormRequire> = async (data) => {
     try {
       const costPrice = data.costPrice * data.count;
       const salePrice = data.salePrice * data.count;

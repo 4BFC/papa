@@ -1,8 +1,10 @@
 import { Banknote, CreditCard, ChevronUp, ChevronDown } from "lucide-react";
+import { Dispatch, SetStateAction } from "react";
 import type {
   UseFormRegister,
   FieldErrors,
   SubmitHandler,
+  UseFormHandleSubmit,
 } from "react-hook-form";
 import { FormRequire } from "@/shared/types";
 
@@ -10,7 +12,7 @@ const InputFormItem = ({
   isHeaderActive,
   setHeaderActive,
   setComplexPayment,
-  handleActive,
+  // handleActive,
   getLoading,
   postLoading,
   handleSubmit,
@@ -21,15 +23,16 @@ const InputFormItem = ({
   isComplexPayment,
 }: {
   isHeaderActive: boolean;
-  setHeaderActive: (value: boolean) => void;
+  setHeaderActive: Dispatch<SetStateAction<boolean>>;
   setComplexPayment: (value: boolean) => void;
-  handleActive: (value: boolean) => void;
+  //   handleActive: (value: boolean) => void;
+  onSubmit: SubmitHandler<FormRequire>;
   getLoading: boolean;
   postLoading: boolean;
-  handleSubmit: SubmitHandler<FormRequire>;
+  handleSubmit: UseFormHandleSubmit<FormRequire>;
   register: UseFormRegister<FormRequire>;
   errors: FieldErrors<FormRequire>;
-  setTax: (value: boolean) => void;
+  setTax: Dispatch<SetStateAction<boolean>>;
   isComplexPayment: boolean;
 }): React.ReactElement => {
   return (
@@ -190,7 +193,8 @@ const InputFormItem = ({
       <div className="py-2">
         <button
           onClick={() => {
-            handleActive({ handle: setHeaderActive });
+            // handleActive({ handle: setHeaderActive });
+            setHeaderActive((prev) => !prev);
             setComplexPayment(false);
           }}
         >

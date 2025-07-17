@@ -1,4 +1,5 @@
 import { Calendar } from "lucide-react";
+import { Dispatch, SetStateAction } from "react";
 
 const Header = ({
   setComplexPayment,
@@ -8,7 +9,7 @@ const Header = ({
   isSelectedDate,
   today,
 }: {
-  setComplexPayment: (value: boolean) => void;
+  setComplexPayment: Dispatch<SetStateAction<boolean>>;
   setHeaderActive: (value: boolean) => void;
   setDateSlideOpen: (value: boolean) => void;
   isComplexPayment: boolean;

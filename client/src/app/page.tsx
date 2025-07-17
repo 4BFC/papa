@@ -1,9 +1,9 @@
 "use client";
 
 import {
-  Dispatch,
+  // Dispatch,
   ReactElement,
-  SetStateAction,
+  // SetStateAction,
   useEffect,
   useState,
 } from "react";
@@ -122,14 +122,14 @@ export default function Home(): ReactElement {
   //     : 0;
   // }, [getData]);
 
-  const handleActive = ({
-    handle,
-  }: {
-    // 해당 Dispatch는 어떤 역할인가?
-    handle: Dispatch<SetStateAction<boolean>>;
-  }): void => {
-    handle((prev) => !prev);
-  };
+  // const handleActive = ({
+  //   handle,
+  // }: {
+  //   // 해당 Dispatch는 어떤 역할인가?
+  //   handle: Dispatch<SetStateAction<boolean>>;
+  // }): void => {
+  //   handle((prev) => !prev);
+  // };
 
   // const onSubmit = async (data: FormRequire): Promise<void> => {
   //   try {
@@ -322,16 +322,16 @@ export default function Home(): ReactElement {
         setHeaderActive={setHeaderActive}
         setDateSlideOpen={setDateSlideOpen}
         isComplexPayment={isComplexPayment}
-        isSelectedDate={isSelectedDate}
+        isSelectedDate={isSelectedDate ?? ""}
         today={today}
       />
       {/* Input */}
       <InputForm
-        todayUTC={todayUTC}
+        // todayUTC={todayUTC}
         isHeaderActive={isHeaderActive}
         setHeaderActive={setHeaderActive}
         setComplexPayment={setComplexPayment}
-        handleActive={handleActive}
+        // handleActive={handleActive}
         getLoading={getLoading}
         postLoading={postLoading}
         isComplexPayment={isComplexPayment}

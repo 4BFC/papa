@@ -1,13 +1,20 @@
-import InputFormItem from "@/features/secretary/input/ui/InuptFromItem";
+import InputFormItem from "@/features/secretary/input/ui/InputFromItem";
 // import useFetchAPI from "@/features/secretary/input/model/useFetchAPI";
 import useInputForm from "@/features/secretary/input/model/useInputForm";
+import {
+  LedgerRequire,
+  PaymentRequire,
+  LedgerDataResponse,
+  PaymentDataResponse,
+} from "@/shared/types";
+import { Dispatch, SetStateAction } from "react";
 
 const InputForm = ({
   //   todayUTC,
   isHeaderActive,
   setHeaderActive,
   setComplexPayment,
-  handleActive,
+  //   handleActive,
   getLoading,
   postLoading,
   isComplexPayment,
@@ -16,11 +23,15 @@ const InputForm = ({
   fetchData,
   paymentFetchData,
 }: {
-  todayUTC: string;
+  //   todayUTC: string;
   isHeaderActive: boolean;
-  setHeaderActive: (value: boolean) => void;
+  setHeaderActive: Dispatch<SetStateAction<boolean>>;
   setComplexPayment: (value: boolean) => void;
-  handleActive: (value: boolean) => void;
+  //   handleActive: ({
+  //     handle,
+  //   }: {
+  //     handle: Dispatch<SetStateAction<boolean>>;
+  //   }) => void;
   getLoading: boolean;
   postLoading: boolean;
   isComplexPayment: boolean;
@@ -43,7 +54,7 @@ const InputForm = ({
       isHeaderActive={isHeaderActive}
       setHeaderActive={setHeaderActive}
       setComplexPayment={setComplexPayment}
-      handleActive={handleActive}
+      //   handleActive={handleActive}
       getLoading={getLoading}
       postLoading={postLoading}
       handleSubmit={handleSubmit}
