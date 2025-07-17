@@ -7,7 +7,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useForm } from "react-hook-form";
+// import { useForm } from "react-hook-form";
 import {
   LedgerDataResponse,
   LedgerModel,
@@ -15,7 +15,7 @@ import {
   PaymentModel,
   PaymentDataResponse,
   PaymentRequire,
-  FormRequire,
+  // FormRequire,
 } from "@/shared/types";
 import { DateItem } from "@/components";
 import DataRowListContainer from "@/widgets/secretary/body/container/DataRowListContainer";
@@ -24,18 +24,20 @@ import { useFetch, useMutation } from "@/shared/lib/hook";
 import { get, post } from "@/shared/lib/axios";
 import "@/shared/lib/axios/axiosInterceptors";
 import {
-  Calendar,
+  // Calendar,
   X,
-  ChevronDown,
-  ChevronUp,
+  // ChevronDown,
+  // ChevronUp,
   // Loader2,
-  CreditCard,
-  Banknote,
+  // CreditCard,
+  // Banknote,
   // Check,
   // CheckCheck,
 } from "lucide-react";
 
 import { getUniqueSortedDates } from "@/shared/utils";
+import Header from "@/features/secretary/header/Header";
+import InputForm from "@/widgets/secretary/input/presentational/InputForm";
 // import { totalProfit, getUniqueSortedDates } from "@/shared/utils";
 
 // export interface PaymentRequire {
@@ -104,13 +106,13 @@ export default function Home(): ReactElement {
   // const [, setIsResponse] = useState<LedgerRequire | null>(null);
   /** 폼 상태 관리 && 데이터 */
   // 복합결제를 위해서 타입 확장성이 필요함.
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormRequire>();
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   formState: { errors },
+  // } = useForm<FormRequire>();
 
-  const [isTax, setTax] = useState<boolean>(false);
+  // const [isTax, setTax] = useState<boolean>(false);
 
   // const totalProfit = useMemo(() => {
   //   return getData
@@ -129,85 +131,85 @@ export default function Home(): ReactElement {
     handle((prev) => !prev);
   };
 
-  const onSubmit = async (data: FormRequire): Promise<void> => {
-    try {
-      const costPrice = data.costPrice * data.count;
-      const salePrice = data.salePrice * data.count;
-      let profit = salePrice - costPrice;
+  // const onSubmit = async (data: FormRequire): Promise<void> => {
+  //   try {
+  //     const costPrice = data.costPrice * data.count;
+  //     const salePrice = data.salePrice * data.count;
+  //     let profit = salePrice - costPrice;
 
-      if (isTax) {
-        profit = profit - profit * 0.1;
-      }
+  //     if (isTax) {
+  //       profit = profit - profit * 0.1;
+  //     }
 
-      /**profit 필드 추가 */
-      const payload = {
-        // ...data,
-        count: data.count,
-        item: data.item,
-        profit,
-        costPrice,
-        salePrice,
-        type: isTax,
-      };
+  //     /**profit 필드 추가 */
+  //     const payload = {
+  //       // ...data,
+  //       count: data.count,
+  //       item: data.item,
+  //       profit,
+  //       costPrice,
+  //       salePrice,
+  //       type: isTax,
+  //     };
 
-      // 데이터에 required에 맞는 필드 추가 필요.
-      // const result = await post("api/ledger/post", payload);
-      // const result = await post("api/ledger/post", payload);
-      const ledgerResult = await postMutate(payload);
-      console.log("🎯ledgerResult", ledgerResult.data[0].id);
-      const ledgerId = ledgerResult.data[0].id;
-      // 2. Payment 요청 준비
-      if (!ledgerResult || !ledgerId) {
-        throw new Error("다중 결제 등록 실패");
-      }
+  //     // 데이터에 required에 맞는 필드 추가 필요.
+  //     // const result = await post("api/ledger/post", payload);
+  //     // const result = await post("api/ledger/post", payload);
+  //     const ledgerResult = await postMutate(payload);
+  //     console.log("🎯ledgerResult", ledgerResult.data[0].id);
+  //     const ledgerId = ledgerResult.data[0].id;
+  //     // 2. Payment 요청 준비
+  //     if (!ledgerResult || !ledgerId) {
+  //       throw new Error("다중 결제 등록 실패");
+  //     }
 
-      //확인 필요
-      const paymentPayload: PaymentRequire[] = [
-        {
-          ledgerId,
-          type: "card",
-          price: Number(data.cardPrice),
-          profit: 6300,
-        },
-        {
-          ledgerId,
-          type: "cash",
-          price: Number(data.cashPrice),
-          profit: 6300,
-        },
-      ];
-      // if (data.cardPrice) {
-      //   paymentPayload.push({
-      //     ledgerId: 46,
-      //     type: "card",
-      //     price: Number(data.cardPrice),
-      //     profit: 100,
-      //   });
-      // }
+  //     //확인 필요
+  //     const paymentPayload: PaymentRequire[] = [
+  //       {
+  //         ledgerId,
+  //         type: "card",
+  //         price: Number(data.cardPrice),
+  //         profit: 6300,
+  //       },
+  //       {
+  //         ledgerId,
+  //         type: "cash",
+  //         price: Number(data.cashPrice),
+  //         profit: 6300,
+  //       },
+  //     ];
+  //     // if (data.cardPrice) {
+  //     //   paymentPayload.push({
+  //     //     ledgerId: 46,
+  //     //     type: "card",
+  //     //     price: Number(data.cardPrice),
+  //     //     profit: 100,
+  //     //   });
+  //     // }
 
-      // if (data.cashPrice) {
-      //   paymentPayload.push({
-      //     ledgerId: 46,
-      //     type: "cash",
-      //     price: Number(data.cashPrice),
-      //     profit: 100,
-      //   });
-      // }
-      console.log("🎯paymentPayload", paymentPayload);
-      const paymentResult = await paymentPostMutate(paymentPayload);
-      console.log("🎯paymentResult", paymentResult);
+  //     // if (data.cashPrice) {
+  //     //   paymentPayload.push({
+  //     //     ledgerId: 46,
+  //     //     type: "cash",
+  //     //     price: Number(data.cashPrice),
+  //     //     profit: 100,
+  //     //   });
+  //     // }
+  //     console.log("🎯paymentPayload", paymentPayload);
+  //     const paymentResult = await paymentPostMutate(paymentPayload);
+  //     console.log("🎯paymentResult", paymentResult);
 
-      await fetchData();
-      await paymentFetchData();
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        console.error(error.message);
-      } else {
-        console.error("예외 타입 Error", String(error));
-        throw error;
-      }
-    }
-  };
+  //     await fetchData();
+  //     await paymentFetchData();
+  //   } catch (error: unknown) {
+  //     if (error instanceof Error) {
+  //       console.error(error.message);
+  //     } else {
+  //       console.error("예외 타입 Error", String(error));
+  //       throw error;
+  //     }
+  //   }
+  // };
 
   /** ledger API GET state 확인 */
   useEffect(() => {
@@ -283,7 +285,7 @@ export default function Home(): ReactElement {
     // 여기서 h-screen은 매번 기입을 해야하는건가?
     <div className="h-screen flex flex-col items-center justify-center">
       {/* Header */}
-      <div className="flex w-full justify-center items-center p-5 text-lg font-bold">
+      {/* <div className="flex w-full justify-center items-center p-5 text-lg font-bold">
         <div className="flex justify-start items-center w-1/3">
           <div
             className={`relative flex justify-center items-center w-11 h-6 transition-colors duration-200 ${
@@ -314,177 +316,30 @@ export default function Home(): ReactElement {
             <Calendar className="w-5 h-5" />
           </span>
         </div>
-      </div>
+      </div> */}
+      <Header
+        setComplexPayment={setComplexPayment}
+        setHeaderActive={setHeaderActive}
+        setDateSlideOpen={setDateSlideOpen}
+        isComplexPayment={isComplexPayment}
+        isSelectedDate={isSelectedDate}
+        today={today}
+      />
       {/* Input */}
-      <div className="flex flex-col items-center justify-center w-full">
-        {/* Input Form */}
-        <div
-          className={`flex items-center justify-center w-full transition-all duration-500 ease-in-out
-          ${
-            isHeaderActive
-              ? "max-h-[500px] opacity-100 transform scale-y-100 origin-top p-2"
-              : "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
-          }
-        }`}
-        >
-          <form
-            className="flex flex-col items-center justify-center w-full gap-2"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className="flex flex-col justify-center items-center gap-2 w-11/12">
-              <div className="flex justify-center items-center gap-1 w-full">
-                <div className="flex justify-end items-center w-full gap-2">
-                  <div className="flex justify-center items-center gap-1">
-                    <span className="flex">카드</span>
-                    <input
-                      className="w-5 h-5"
-                      type="checkbox"
-                      onClick={() => {
-                        console.log("check isTax");
-                        setTax((prev) => !prev);
-                      }}
-                      {...register("type")}
-                    />
-                  </div>
-                  <div className="w-8/12">
-                    <input
-                      className="w-full p-2 border-1 border-gray-400 rounded"
-                      type="text"
-                      placeholder="상품"
-                      {...register("item", {
-                        required: "상품 기입은 필수 입니다.",
-                      })}
-                    />
-                    {errors.item && (
-                      <span className="text-red-500 text-xs">
-                        {errors.item.message}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="w-4/12">
-                  <input
-                    className="w-full p-2 border-1 border-gray-400 rounded"
-                    type="number"
-                    placeholder="수량"
-                    {...register("count", {
-                      required: "수량 기입 필",
-                      valueAsNumber: true,
-                      min: {
-                        value: 1,
-                        message: "수량 1개 이상 필",
-                      },
-                    })}
-                  />
-                  {errors.count && (
-                    <span className="text-red-500 text-xs">
-                      {errors.count.message}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="flex justify-center items-center gap-1 w-full">
-                <div className="w-full">
-                  <input
-                    className="w-full p-2 border-1 border-gray-400 rounded"
-                    type="number"
-                    placeholder="판매가"
-                    {...register("salePrice", {
-                      required: "판매가를 기입해야 합니다.",
-                      valueAsNumber: true,
-                      min: {
-                        value: 100,
-                        message: "가격은 100원 이상이어야 합니다.",
-                      },
-                    })}
-                  />
-                  {errors.salePrice && (
-                    <span className="text-red-500 text-xs">
-                      {errors.salePrice.message}
-                    </span>
-                  )}
-                </div>
-                <div className="w-full">
-                  {/* 원가 계산을 수량에 따라 값이 적용되게 코드를 구현할 필요 있음 */}
-                  <input
-                    className="w-full p-2 border-1 border-gray-400 rounded"
-                    type="number"
-                    placeholder="원가"
-                    {...register("costPrice", {
-                      required: "원가를 기입해야 합니다.",
-                      valueAsNumber: true,
-                      min: {
-                        value: 100,
-                        message: "가격은 100원 이상이어야 합니다.",
-                      },
-                    })}
-                  />
-                  {errors.costPrice && (
-                    <span className="text-red-500 text-xs">
-                      {errors.costPrice.message}
-                    </span>
-                  )}
-                </div>
-              </div>
-            </div>
-            {/* 다중 결제 추가 영역 */}
-            <div
-              className={`flex flex-col justify-center items-center w-11/12 transition-all duration-500 ease-in-out ${
-                isComplexPayment
-                  ? "max-h-[500px] opacity-100 transform scale-y-100 origin-top"
-                  : "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
-              }`}
-            >
-              <div className="flex flex-col justify-center items-center gap-1 w-full">
-                <div className="flex justify-center items-center w-full gap-1">
-                  <CreditCard strokeWidth={2} className="text-blue-500" />
-                  <span className="flex w-1/3">카드</span>
-                  <input
-                    type="text"
-                    className="w-full p-2 border-1 border-gray-400 rounded"
-                    placeholder="카드 금액"
-                    {...register("cardPrice")}
-                  />
-                </div>
-                <div className="flex justify-center items-center w-full gap-1 ">
-                  <Banknote strokeWidth={2} className="text-green-500" />
-                  <span className="flex w-1/3">현금</span>
-                  <input
-                    type="text"
-                    className="w-full p-2 border-1 border-gray-400 rounded"
-                    placeholder="현금 금액"
-                    {...register("cashPrice")}
-                  />
-                </div>
-              </div>
-            </div>
-            <button
-              className={`${
-                getLoading || postLoading ? "bg-gray-400" : "bg-blue-500"
-              }  text-white px-8 py-2 font-medium rounded-md mt-4`}
-              type="submit"
-              disabled={getLoading || postLoading}
-            >
-              등록
-            </button>
-          </form>
-        </div>
-        {/* Input Form 접기 버튼 */}
-        <div className="py-2">
-          <button
-            onClick={() => {
-              handleActive({ handle: setHeaderActive });
-              setComplexPayment(false);
-            }}
-          >
-            {isHeaderActive ? (
-              <ChevronUp className="w-5 h-5" />
-            ) : (
-              <ChevronDown className="w-5 h-5" />
-            )}
-          </button>
-        </div>
-      </div>
+      <InputForm
+        todayUTC={todayUTC}
+        isHeaderActive={isHeaderActive}
+        setHeaderActive={setHeaderActive}
+        setComplexPayment={setComplexPayment}
+        handleActive={handleActive}
+        getLoading={getLoading}
+        postLoading={postLoading}
+        isComplexPayment={isComplexPayment}
+        postMutate={postMutate}
+        paymentPostMutate={paymentPostMutate}
+        fetchData={fetchData}
+        paymentFetchData={paymentFetchData}
+      />
       {/* Body */}
       <DataRowListContainer
         data={getData ?? []}
