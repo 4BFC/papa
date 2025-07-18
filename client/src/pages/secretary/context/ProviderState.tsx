@@ -1,18 +1,27 @@
 import { createContext } from "react";
-import { SecretaryContextType } from "@/shared/types/secretary/contextType";
+import useSecretaryState from "@/features/secretary/model/useSecretaryState";
+import useSecretaryFetch from "@/features/secretary/model/useSecretaryFetch";
 
 export const SecretaryContext = createContext({});
 
-export default function ProviderState({
+const ProviderState = ({
   children,
-  value,
 }: {
   children: React.ReactNode;
-  value: SecretaryContextType;
-}): React.ReactElement {
+}): React.ReactElement => {
+  const secretaryFetch = useSecretaryFetch();
+  const secretaryState = useSecretaryState();
+
+  const contextValue = {
+    ...secretaryFetch,
+    ...secretaryState,
+  };
+
   return (
-    <SecretaryContext.Provider value={value}>
+    <SecretaryContext.Provider value={contextValue}>
       {children}
     </SecretaryContext.Provider>
   );
-}
+};
+
+export default ProviderState;
