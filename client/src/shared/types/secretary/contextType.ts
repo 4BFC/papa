@@ -35,8 +35,8 @@ export interface SecretaryContextFetchType {
   postData: LedgerDataResponse[];
   paymentPostData: PaymentDataResponse[];
   actions: {
-    ledgerPost: (payload: LedgerRequire) => void;
-    paymentPost: (payload: PaymentRequire[]) => void;
+    ledgerPost: (payload: LedgerRequire) => Promise<LedgerDataResponse>;
+    paymentPost: (payload: PaymentRequire[]) => Promise<PaymentDataResponse>;
   };
   fetchData: {
     getFetchData: () => void;
@@ -44,6 +44,13 @@ export interface SecretaryContextFetchType {
   };
   isLoading: boolean;
   isError: boolean;
+
+  getFetchData: () => void;
+  paymentFetchData: () => void;
+  postMutate: (payload: LedgerRequire) => Promise<LedgerDataResponse>;
+  paymentPostMutate: (
+    payload: PaymentRequire[]
+  ) => Promise<PaymentDataResponse>;
 }
 
 export type SecretaryContextType = SecretaryContextStateType &
