@@ -41,7 +41,8 @@
       "@/api/client/*": ["./src/api/client/*"],
       "@/api/server/*": ["./src/api/server/*"],
       "@/components/*": ["./src/components/*"],
-      "@/pages/*": ["./src/pages/*"]
+      "@/pages/*": ["./src/pages/*"],
+      "@/views/*": ["./src/views/*"]
     }
   },
   "include": [

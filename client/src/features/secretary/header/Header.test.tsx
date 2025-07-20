@@ -1,7 +1,7 @@
 import { Calendar } from "lucide-react";
 // import { Dispatch, SetStateAction } from "react";
 // import useSecretaryState from "../model/useSecretaryState";
-import useSecretaryContext from "@/pages/secretary/context/useSecretaryContext";
+import useSecretaryContext from "@/views/secretary/context/useSecretaryContext";
 
 const Header = ({
   // setComplexPayment,
