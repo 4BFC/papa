@@ -9,7 +9,7 @@ import type {
 import { FormRequire } from "@/shared/types";
 // import useSecretaryState from "../../model/useSecretaryState";
 // import useSecretaryFetch from "../../model/useSecretaryFetch";
-import useSecretaryContext from "@/pages/secretary/context/useSecretaryContext";
+import useSecretaryContext from "@/views/secretary/context/useSecretaryContext";
 
 const InputFormItem = ({
   // isHeaderActive,
