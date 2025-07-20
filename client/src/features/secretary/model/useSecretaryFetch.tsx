@@ -1,4 +1,5 @@
 import { useFetch, useMutation } from "@/shared/lib/hook";
+import { SecretaryContextFetchType } from "@/shared/types/secretary/contextType";
 import { get, post } from "@/shared/lib/axios";
 import {
   LedgerDataResponse,
@@ -9,7 +10,7 @@ import {
   PaymentRequire,
 } from "@/shared/types";
 
-const useSecretaryFetch = (): void => {
+const useSecretaryFetch = (): SecretaryContextFetchType => {
   /** ledger API GET state 확인 */
   const {
     isData: getData,
@@ -74,9 +75,20 @@ const useSecretaryFetch = (): void => {
       paymentFetchData: paymentFetchData,
     },
 
+    // ✅ 직접 접근용 필드들 추가 (하위 호환성)
+    getFetchData,
+    paymentFetchData,
+    postMutate, // ✅ 추가
+    paymentPostMutate,
+
     /** loading */
     isLoading:
       getLoading || paymentLoading || postLoading || paymentPostLoading,
+
+    getLoading,
+    paymentLoading,
+    postLoading,
+    paymentPostLoading,
 
     /** error */
     isError: getError || paymentError || postError || paymentPostError,
