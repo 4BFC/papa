@@ -1,8 +1,11 @@
 import { createContext } from "react";
+import { SecretaryContextType } from "@/shared/types/secretary/contextType";
 import useSecretaryState from "@/features/secretary/model/useSecretaryState";
 import useSecretaryFetch from "@/features/secretary/model/useSecretaryFetch";
 
-export const SecretaryContext = createContext({});
+export const SecretaryContext = createContext<SecretaryContextType | null>(
+  null
+);
 
 const ProviderState = ({
   children,
