@@ -60,8 +60,8 @@ const useSecretaryFetch = (): SecretaryContextFetchType => {
     paymentData: paymentData ?? [],
 
     /** post */
-    postData: postData ?? [],
-    paymentPostData: paymentPostData ?? [],
+    postData: postData ? [postData] : [],
+    paymentPostData: paymentPostData ? [paymentPostData] : [],
 
     /** post */
     actions: {
