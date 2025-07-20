@@ -7,16 +7,16 @@ import {
   LedgerDataResponse,
 } from "@/shared/types";
 
-export interface SecretaryContextType {
-  isSelectedDate: string | null;
-  setSelectedDate: React.Dispatch<React.SetStateAction<string | null>>;
-  isDateSlideOpen: boolean;
-  setDateSlideOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  isHeaderActive: boolean;
-  setHeaderActive: React.Dispatch<React.SetStateAction<boolean>>;
-  isComplexPayment: boolean;
-  setComplexPayment: React.Dispatch<React.SetStateAction<boolean>>;
-}
+// export interface SecretaryContextType {
+//   isSelectedDate: string | null;
+//   setSelectedDate: React.Dispatch<React.SetStateAction<string | null>>;
+//   isDateSlideOpen: boolean;
+//   setDateSlideOpen: React.Dispatch<React.SetStateAction<boolean>>;
+//   isHeaderActive: boolean;
+//   setHeaderActive: React.Dispatch<React.SetStateAction<boolean>>;
+//   isComplexPayment: boolean;
+//   setComplexPayment: React.Dispatch<React.SetStateAction<boolean>>;
+// }
 
 export interface SecretaryContextStateType {
   isSelectedDate: string | null;
@@ -42,8 +42,14 @@ export interface SecretaryContextFetchType {
     getFetchData: () => void;
     paymentFetchData: () => void;
   };
+
   isLoading: boolean;
-  isError: boolean;
+  getLoading: boolean;
+  paymentLoading: boolean;
+  postLoading: boolean;
+  paymentPostLoading: boolean;
+
+  isError: string | null;
 
   getFetchData: () => void;
   paymentFetchData: () => void;
