@@ -1,5 +1,5 @@
 import { Loader2 } from "lucide-react";
-import DataRow from "@/widgets/secretary/body/presentational/DataRow.test";
+import DataRow from "./DataRow.test";
 import { LedgerModel } from "@/shared/types";
 import useSecretaryContext from "@/views/secretary/context/useSecretaryContext";
 
