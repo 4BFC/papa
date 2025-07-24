@@ -13,7 +13,8 @@ import {
   // PaymentDataResponse,
   PaymentRequire,
 } from "@/shared/types";
-import useSecretaryFetch from "../../model/useSecretaryFetch";
+// import useSecretaryFetch from "../../model/useSecretaryFetch";
+import useSecretaryContext from "@/views/secretary/context/useSecretaryContext";
 
 const useInputForm =
   (): // postMutate: (payload: LedgerRequire) => Promise<LedgerDataResponse>,
@@ -32,7 +33,7 @@ const useInputForm =
   } => {
     const [isTax, setTax] = useState<boolean>(false);
     const { getFetchData, paymentFetchData, paymentPostMutate, postMutate } =
-      useSecretaryFetch();
+      useSecretaryContext();
     const {
       register,
       handleSubmit,
