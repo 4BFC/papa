@@ -18,10 +18,9 @@ const SecretaryPage = (): React.ReactElement => {
   return (
     <ProviderState>
       <div className="flex flex-col h-screen">
-        <div className="sticky top-0 z-50">
-          <HeaderTest today={today} />
-          <InputFormTest />
-        </div>
+        {/* <div className="sticky top-0 z-50"> */}
+        <HeaderTest today={today} />
+        <InputFormTest />
         <DataRowListContainerTest todayUTC={todayUTC} />
         <FooterTest todayUTC={todayUTC} />
         <SliderItem />

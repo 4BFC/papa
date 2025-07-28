@@ -9,7 +9,11 @@ const Footer = ({
   data: LedgerModel[];
   todayUTC: string;
 }): React.ReactElement => {
-  return <FooterItem footerState={useFooterState(data, todayUTC)} />;
+  return (
+    <div className="rounded-t-3xl">
+      <FooterItem footerState={useFooterState(data, todayUTC)} />
+    </div>
+  );
 };
 
 export default Footer;
