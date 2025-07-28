@@ -2,6 +2,7 @@
 
 import ProviderState from "./context/ProviderState";
 import HeaderTest from "@/features/secretary/header/Header.test";
+import SliderItem from "@/features/secretary/slider/ui/SliderItem";
 import InputFormTest from "@/widgets/secretary/input/presentational/InputForm.test";
 import "@/shared/lib/axios/axiosInterceptors";
 import FooterTest from "@/widgets/secretary/footer/presentational/Footer.test";
@@ -20,6 +21,7 @@ const SecretaryPage = (): React.ReactElement => {
       <InputFormTest />
       <DataRowListContainerTest todayUTC={todayUTC} />
       <FooterTest todayUTC={todayUTC} />
+      <SliderItem />
     </ProviderState>
   );
 };
