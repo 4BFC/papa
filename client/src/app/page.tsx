@@ -17,7 +17,7 @@ import {
   PaymentRequire,
   // FormRequire,
 } from "@/shared/types";
-import { DateItem } from "@/components";
+import DateItem from "@/features/secretary/slider/ui/DateItem";
 import DataRowListContainer from "@/widgets/secretary/body/container/DataRowListContainer";
 import Footer from "@/widgets/secretary/footer/presentational/Footer";
 import { useFetch, useMutation } from "@/shared/lib/hook";

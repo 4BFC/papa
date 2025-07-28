@@ -153,7 +153,7 @@ const InputFormItem = ({
               </div>
             </div>
           </div>
-          {/* 다중 결제 추가 영역 */}
+          {/* 다중 결제 추가 영역 - 컴포넌트 분리 필요*/}
           <div
             className={`flex flex-col justify-center items-center w-11/12 transition-all duration-500 ease-in-out ${
               isComplexPayment
