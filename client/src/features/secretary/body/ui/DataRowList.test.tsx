@@ -10,11 +10,11 @@ const DataRowList = ({
   data: LedgerModel[];
   children: React.ReactNode;
 }): React.ReactElement => {
-  const { getLoading } = useSecretaryContext();
+  const { getLoading, scrollRef } = useSecretaryContext();
 
   return (
     <div className="flex flex-col h-screen w-full bg-gray-200 overflow-y-auto pb-16">
-      <div className="flex-1 overflow-y-auto w-full">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto w-full">
         {children}
         {/* 로딩 부분을 따로 분리해서 관리 할 수 있게 해야한다. 또는 suspense 사용을해서 문제를 해결 해야한다.*/}
         {getLoading ? (

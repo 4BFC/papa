@@ -18,8 +18,13 @@ const useInputForm = (): {
   onSubmit: SubmitHandler<FormRequire>;
 } => {
   const [isTax, setTax] = useState<boolean>(false);
-  const { getFetchData, paymentFetchData, paymentPostMutate, postMutate } =
-    useSecretaryContext();
+  const {
+    getFetchData,
+    paymentFetchData,
+    paymentPostMutate,
+    postMutate,
+    scrollRef,
+  } = useSecretaryContext();
   const {
     register,
     handleSubmit,
@@ -80,6 +85,17 @@ const useInputForm = (): {
       await paymentFetchData();
 
       reset();
+
+      // 스크롤 함수 분리 필요
+      if (scrollRef.current) {
+        scrollRef.current?.scrollTo({
+          top: scrollRef.current.scrollHeight + 100,
+          behavior: "smooth",
+        });
+        console.log("🎯scrollRef.current", scrollRef.current);
+      } else {
+        console.log("🎯scrollRef.current is null");
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error.message);

@@ -27,6 +27,7 @@ export interface SecretaryContextStateType {
   setHeaderActive: React.Dispatch<React.SetStateAction<boolean>>;
   isComplexPayment: boolean;
   setComplexPayment: React.Dispatch<React.SetStateAction<boolean>>;
+  scrollRef: React.RefObject<HTMLDivElement>;
 }
 
 export interface SecretaryContextFetchType {
