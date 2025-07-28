@@ -7,31 +7,16 @@ import type {
   UseFormHandleSubmit,
 } from "react-hook-form";
 import { FormRequire } from "@/shared/types";
-// import useSecretaryState from "../../model/useSecretaryState";
-// import useSecretaryFetch from "../../model/useSecretaryFetch";
+
 import useSecretaryContext from "@/views/secretary/context/useSecretaryContext";
 
 const InputFormItem = ({
-  // isHeaderActive,
-  // setHeaderActive,
-  // setComplexPayment,
-  // handleActive,
-  // getLoading,
-  // postLoading,
-  // isComplexPayment,
   handleSubmit,
   onSubmit,
   register,
   errors,
   setTax,
 }: {
-  // isHeaderActive: boolean;
-  // setHeaderActive: Dispatch<SetStateAction<boolean>>;
-  // setComplexPayment: (value: boolean) => void;
-  //   handleActive: (value: boolean) => void;
-  // getLoading: boolean;
-  // postLoading: boolean;
-  // isComplexPayment: boolean;
   handleSubmit: UseFormHandleSubmit<FormRequire>;
   onSubmit: SubmitHandler<FormRequire>;
   register: UseFormRegister<FormRequire>;
