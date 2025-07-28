@@ -40,7 +40,7 @@ const InputFormItem = ({
   }, [isLoading, setHeaderActive, setComplexPayment]);
 
   return (
-    <div className="flex flex-col items-center justify-center w-full">
+    <div className="absolute top-full left-0 right-0 z-20 bg-white flex flex-col items-center justify-center w-full">
       {/* Input Form */}
       <div
         className={`flex items-center justify-center w-full transition-all duration-500 ease-in-out
