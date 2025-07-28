@@ -87,15 +87,17 @@ const useInputForm = (): {
       reset();
 
       // 스크롤 함수 분리 필요
-      if (scrollRef.current) {
-        scrollRef.current?.scrollTo({
-          top: scrollRef.current.scrollHeight + 100,
-          behavior: "smooth",
-        });
-        console.log("🎯scrollRef.current", scrollRef.current);
-      } else {
-        console.log("🎯scrollRef.current is null");
-      }
+      setTimeout(() => {
+        if (scrollRef.current) {
+          scrollRef.current?.scrollTo({
+            top: scrollRef.current.scrollHeight + 100,
+            behavior: "smooth",
+          });
+          console.log("🎯scrollRef.current", scrollRef.current);
+        } else {
+          console.log("🎯scrollRef.current is null");
+        }
+      }, 200);
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error.message);
