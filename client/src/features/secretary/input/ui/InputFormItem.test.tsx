@@ -33,8 +33,11 @@ const InputFormItem = ({
   // const { getLoading, postLoading } = useSecretaryFetch();
 
   useEffect(() => {
-    console.log("InputFormItem: isComplexPayment changed to", isComplexPayment);
-  }, [isComplexPayment]);
+    if (isLoading) {
+      // setHeaderActive(false);
+      // setComplexPayment(false);
+    }
+  }, [isLoading, setHeaderActive, setComplexPayment]);
 
   return (
     <div className="flex flex-col items-center justify-center w-full">

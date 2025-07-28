@@ -24,6 +24,7 @@ const useInputForm = (): {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormRequire>();
 
   const onSubmit: SubmitHandler<FormRequire> = async (data) => {
@@ -49,12 +50,13 @@ const useInputForm = (): {
       const ledgerResult = await postMutate(payload);
       console.log("🎯ledgerResult", ledgerResult.data[0].id);
       const ledgerId = ledgerResult.data[0].id;
-      // 2. Payment 요청 준비
+
+      // Payment 요청 실패시 throw Error
       if (!ledgerResult || !ledgerId) {
         throw new Error("다중 결제 등록 실패");
       }
 
-      //확인 필요
+      // 2. Payment 요청 준비
       const paymentPayload: PaymentRequire[] = [
         {
           ledgerId,
@@ -76,6 +78,8 @@ const useInputForm = (): {
 
       await getFetchData();
       await paymentFetchData();
+
+      reset();
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error(error.message);
