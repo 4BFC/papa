@@ -59,6 +59,7 @@ const InputFormItem = ({
                   <span className="flex">카드</span>
                   <input
                     className="w-5 h-5"
+                    checked={isComplexPayment}
                     type="checkbox"
                     onClick={() => {
                       console.log("check isTax");
