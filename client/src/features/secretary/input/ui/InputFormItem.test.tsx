@@ -29,7 +29,7 @@ const InputFormItem = ({
     setHeaderActive,
     setComplexPayment,
     isLoading,
-    scrollRef,
+    // scrollRef,
   } = useSecretaryContext();
   // const { getLoading, postLoading } = useSecretaryFetch();
 
@@ -194,7 +194,7 @@ const InputFormItem = ({
             등록
           </button>
         </form>
-        <button
+        {/* <button
           onClick={() => {
             if (scrollRef.current) {
               scrollRef.current?.scrollTo({
@@ -205,7 +205,7 @@ const InputFormItem = ({
           }}
         >
           Scroll
-        </button>
+        </button> */}
       </div>
       {/* Input Form 접기 버튼 */}
       <div className="py-2">
