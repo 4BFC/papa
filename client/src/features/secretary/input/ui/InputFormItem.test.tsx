@@ -16,12 +16,16 @@ const InputFormItem = ({
   register,
   errors,
   setTax,
+  isChecked,
+  setChecked,
 }: {
   handleSubmit: UseFormHandleSubmit<FormRequire>;
   onSubmit: SubmitHandler<FormRequire>;
   register: UseFormRegister<FormRequire>;
   errors: FieldErrors<FormRequire>;
   setTax: Dispatch<SetStateAction<boolean>>;
+  isChecked: boolean;
+  setChecked: Dispatch<SetStateAction<boolean>>;
 }): React.ReactElement => {
   const {
     isHeaderActive,
@@ -63,11 +67,12 @@ const InputFormItem = ({
                   <span className="flex">카드</span>
                   <input
                     className="w-5 h-5"
-                    checked={isComplexPayment}
+                    checked={isChecked}
                     type="checkbox"
                     onClick={() => {
                       console.log("check isTax");
                       setTax((prev) => !prev);
+                      setChecked((prev) => !prev);
                     }}
                     {...register("type")}
                   />

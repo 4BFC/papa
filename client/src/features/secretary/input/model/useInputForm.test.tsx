@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   UseFormRegister,
   FieldErrors,
@@ -16,14 +16,18 @@ const useInputForm = (): {
   handleSubmit: UseFormHandleSubmit<FormRequire>;
   errors: FieldErrors<FormRequire>;
   onSubmit: SubmitHandler<FormRequire>;
+  isChecked: boolean;
+  setChecked: Dispatch<SetStateAction<boolean>>;
 } => {
   const [isTax, setTax] = useState<boolean>(false);
+  const [isChecked, setChecked] = useState<boolean>(false);
   const {
     getFetchData,
     paymentFetchData,
     paymentPostMutate,
     postMutate,
     scrollRef,
+    isComplexPayment,
   } = useSecretaryContext();
   const {
     register,
@@ -31,6 +35,16 @@ const useInputForm = (): {
     formState: { errors },
     reset,
   } = useForm<FormRequire>();
+
+  useEffect(() => {
+    if (!isComplexPayment) {
+      setTax(false);
+      setChecked(false);
+    } else {
+      setTax(true);
+      setChecked(true);
+    }
+  }, [isComplexPayment, setTax, setChecked]);
 
   const onSubmit: SubmitHandler<FormRequire> = async (data) => {
     try {
@@ -114,6 +128,8 @@ const useInputForm = (): {
     handleSubmit,
     errors,
     onSubmit,
+    isChecked,
+    setChecked,
   };
 };
 
