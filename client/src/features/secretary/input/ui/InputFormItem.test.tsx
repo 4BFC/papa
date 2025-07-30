@@ -7,36 +7,25 @@ import type {
   UseFormHandleSubmit,
 } from "react-hook-form";
 import { FormRequire } from "@/shared/types";
-// import useSecretaryState from "../../model/useSecretaryState";
-// import useSecretaryFetch from "../../model/useSecretaryFetch";
+
 import useSecretaryContext from "@/views/secretary/context/useSecretaryContext";
 
 const InputFormItem = ({
-  // isHeaderActive,
-  // setHeaderActive,
-  // setComplexPayment,
-  // handleActive,
-  // getLoading,
-  // postLoading,
-  // isComplexPayment,
   handleSubmit,
   onSubmit,
   register,
   errors,
   setTax,
+  isChecked,
+  setChecked,
 }: {
-  // isHeaderActive: boolean;
-  // setHeaderActive: Dispatch<SetStateAction<boolean>>;
-  // setComplexPayment: (value: boolean) => void;
-  //   handleActive: (value: boolean) => void;
-  // getLoading: boolean;
-  // postLoading: boolean;
-  // isComplexPayment: boolean;
   handleSubmit: UseFormHandleSubmit<FormRequire>;
   onSubmit: SubmitHandler<FormRequire>;
   register: UseFormRegister<FormRequire>;
   errors: FieldErrors<FormRequire>;
   setTax: Dispatch<SetStateAction<boolean>>;
+  isChecked: boolean;
+  setChecked: Dispatch<SetStateAction<boolean>>;
 }): React.ReactElement => {
   const {
     isHeaderActive,
@@ -44,12 +33,16 @@ const InputFormItem = ({
     setHeaderActive,
     setComplexPayment,
     isLoading,
+    // scrollRef,
   } = useSecretaryContext();
   // const { getLoading, postLoading } = useSecretaryFetch();
 
   useEffect(() => {
-    console.log("InputFormItem: isComplexPayment changed to", isComplexPayment);
-  }, [isComplexPayment]);
+    if (isLoading) {
+      // setHeaderActive(false);
+      // setComplexPayment(false);
+    }
+  }, [isLoading, setHeaderActive, setComplexPayment]);
 
   return (
     <div className="flex flex-col items-center justify-center w-full">
@@ -74,10 +67,12 @@ const InputFormItem = ({
                   <span className="flex">카드</span>
                   <input
                     className="w-5 h-5"
+                    checked={isChecked}
                     type="checkbox"
                     onClick={() => {
                       console.log("check isTax");
                       setTax((prev) => !prev);
+                      setChecked((prev) => !prev);
                     }}
                     {...register("type")}
                   />
@@ -163,7 +158,7 @@ const InputFormItem = ({
               </div>
             </div>
           </div>
-          {/* 다중 결제 추가 영역 */}
+          {/* 다중 결제 추가 영역 - 컴포넌트 분리 필요*/}
           <div
             className={`flex flex-col justify-center items-center w-11/12 transition-all duration-500 ease-in-out ${
               isComplexPayment
@@ -204,6 +199,18 @@ const InputFormItem = ({
             등록
           </button>
         </form>
+        {/* <button
+          onClick={() => {
+            if (scrollRef.current) {
+              scrollRef.current?.scrollTo({
+                top: scrollRef.current.scrollHeight + 100,
+                behavior: "smooth",
+              });
+            }
+          }}
+        >
+          Scroll
+        </button> */}
       </div>
       {/* Input Form 접기 버튼 */}
       <div className="py-2">

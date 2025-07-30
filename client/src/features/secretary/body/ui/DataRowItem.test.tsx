@@ -34,7 +34,7 @@ const DataRowItem = ({
             {(cardPayment || cashPayment) && (
               <div className="flex flex-col justify-between text-xs text-gray-600">
                 <span>
-                  카드 {formatCurrencyData(cardPayment?.price ?? 0, "ko-KR")}
+                  카드 {formatCurrencyData(cardPayment?.profit ?? 0, "ko-KR")}
                 </span>
                 <span>
                   현금 {formatCurrencyData(cashPayment?.price ?? 0, "ko-KR")}

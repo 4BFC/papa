@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { SecretaryContextStateType } from "@/shared/types/secretary/contextType";
 
 const useSecretaryState = (): SecretaryContextStateType => {
@@ -6,6 +6,7 @@ const useSecretaryState = (): SecretaryContextStateType => {
   const [isDateSlideOpen, setDateSlideOpen] = useState<boolean>(false);
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
   const [isComplexPayment, setComplexPayment] = useState<boolean>(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // const handleDateSlide = (): SetStateAction<boolean> =>
   //   setDateSlideOpen((prev) => !prev);
@@ -44,6 +45,7 @@ const useSecretaryState = (): SecretaryContextStateType => {
     setHeaderActive,
     isComplexPayment,
     setComplexPayment,
+    scrollRef,
   };
 };
 

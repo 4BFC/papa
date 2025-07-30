@@ -3,21 +3,7 @@ import { Calendar } from "lucide-react";
 // import useSecretaryState from "../model/useSecretaryState";
 import useSecretaryContext from "@/views/secretary/context/useSecretaryContext";
 
-const Header = ({
-  // setComplexPayment,
-  // setHeaderActive,
-  // setDateSlideOpen,
-  // isComplexPayment,
-  // isSelectedDate,
-  today,
-}: {
-  // setComplexPayment: Dispatch<SetStateAction<boolean>>;
-  // setHeaderActive: (value: boolean) => void;
-  // setDateSlideOpen: (value: boolean) => void;
-  // isComplexPayment: boolean;
-  // isSelectedDate: string;
-  today: string;
-}): React.ReactElement => {
+const Header = ({ today }: { today: string }): React.ReactElement => {
   const {
     isSelectedDate,
     isComplexPayment,

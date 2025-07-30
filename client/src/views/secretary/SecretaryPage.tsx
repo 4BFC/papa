@@ -17,11 +17,16 @@ const SecretaryPage = (): React.ReactElement => {
   const todayUTC = new Date().toISOString();
   return (
     <ProviderState>
-      <HeaderTest today={today} />
-      <InputFormTest />
-      <DataRowListContainerTest todayUTC={todayUTC} />
-      <FooterTest todayUTC={todayUTC} />
-      <SliderItem />
+      <div className="flex flex-col h-screen">
+        {/* <div className="sticky top-0 z-50"> */}
+        <div>
+          <HeaderTest today={today} />
+          <InputFormTest />
+        </div>
+        <DataRowListContainerTest todayUTC={todayUTC} />
+        <FooterTest todayUTC={todayUTC} />
+        <SliderItem />
+      </div>
     </ProviderState>
   );
 };
