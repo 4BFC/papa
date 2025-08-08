@@ -6,6 +6,8 @@ const useSecretaryState = (): SecretaryContextStateType => {
   const [isDateSlideOpen, setDateSlideOpen] = useState<boolean>(false);
   const [isHeaderActive, setHeaderActive] = useState<boolean>(false);
   const [isComplexPayment, setComplexPayment] = useState<boolean>(false);
+  const [isTax, setTax] = useState<boolean>(false);
+  // 여기에서 추가 필요 한가?
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // const handleDateSlide = (): SetStateAction<boolean> =>
@@ -45,6 +47,8 @@ const useSecretaryState = (): SecretaryContextStateType => {
     setHeaderActive,
     isComplexPayment,
     setComplexPayment,
+    isTax,
+    setTax,
     scrollRef,
   };
 };
