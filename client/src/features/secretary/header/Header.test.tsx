@@ -10,6 +10,7 @@ const Header = ({ today }: { today: string }): React.ReactElement => {
     setComplexPayment,
     setHeaderActive,
     setDateSlideOpen,
+    // isTax,
   } = useSecretaryContext();
   return (
     <div className="flex w-full justify-center items-center p-5 text-lg font-bold">
@@ -19,6 +20,7 @@ const Header = ({ today }: { today: string }): React.ReactElement => {
             isComplexPayment ? "bg-blue-200" : "bg-gray-200"
           } rounded-full`}
           onClick={() => {
+            console.log("payment is ONLY COMPLEX");
             setComplexPayment((prev) => !prev);
             setHeaderActive(true);
           }}
