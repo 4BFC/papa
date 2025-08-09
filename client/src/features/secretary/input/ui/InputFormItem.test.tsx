@@ -7,7 +7,7 @@ import type {
   UseFormHandleSubmit,
 } from "react-hook-form";
 import { FormRequire } from "@/shared/types";
-
+import { getPaymentValidation } from "@/features/secretary/model/usePaymentValidation";
 import useSecretaryContext from "@/views/secretary/context/useSecretaryContext";
 
 const InputFormItem = ({
@@ -37,6 +37,7 @@ const InputFormItem = ({
     isLoading,
     isTax,
     setTax,
+    setPaymentState,
     // scrollRef,
   } = useSecretaryContext();
   // const { getLoading, postLoading } = useSecretaryFetch();
@@ -77,9 +78,11 @@ const InputFormItem = ({
                       setTax((prev) => !prev);
                       const checked = e.target.checked;
                       if (checked) {
-                        console.log("payment is CARD or COMPLEX");
+                        // console.log("payment is CARD or COMPLEX");
+                        setPaymentState(getPaymentValidation(true, false));
                       } else {
                         console.log("payment is DEFAULT");
+                        setPaymentState(getPaymentValidation(false, false));
                       }
                     }}
                     {...register("type")}
@@ -170,7 +173,7 @@ const InputFormItem = ({
           <div
             className={`flex flex-col justify-center items-center w-11/12 transition-all duration-500 ease-in-out ${
               // 여기에 isTax 추가 필요
-              isComplexPayment
+              isComplexPayment && isTax
                 ? "max-h-[500px] opacity-100 transform scale-y-100 origin-top"
                 : "max-h-0 opacity-0 transform scale-y-0 origin-top p-0"
             }`}
