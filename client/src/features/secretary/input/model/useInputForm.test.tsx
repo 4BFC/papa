@@ -52,10 +52,6 @@ const useInputForm = (): {
 
   /** 상태를 점검 하기 위한 useEffect */
   useEffect(() => {
-    // console.log("🎯isTax", isTax);
-    // console.log("🎯isComplexPayment", isComplexPayment);
-    // console.log("🎯paymentMethod", paymentMethod);
-    // console.log("🎯isChecked", isChecked);
     console.log("✅ isPaymentState", isPaymentState);
   }, [isPaymentState]);
 
@@ -65,14 +61,12 @@ const useInputForm = (): {
      * paymentPost가 필요 없는 상태에서 POST가 동작을 한다.
      * log 정리를 먼저 해야한다.
      */
-    try {
-      //해당 costPrice와 salePrice가 동작해야하는 조건은 무엇인가.
+
+    const defaultPayload = (): FormRequire => {
       const costPrice = data.costPrice * data.count;
       const salePrice = data.salePrice * data.count;
-      let profit = salePrice - costPrice;
-
-      /**profit 필드 추가 */
-      const payload = {
+      const profit = salePrice - costPrice;
+      return {
         count: data.count,
         item: data.item,
         profit,
@@ -80,6 +74,57 @@ const useInputForm = (): {
         salePrice,
         type: isTax,
       };
+    };
+
+    const cardPayload = (): FormRequire => {
+      const costPrice = data.costPrice * data.count;
+      const salePrice = data.salePrice * data.count - data.salePrice * 0.1;
+      const profit = salePrice - costPrice;
+      return {
+        count: data.count,
+        item: data.item,
+        profit,
+        costPrice,
+        salePrice,
+        type: isTax,
+      };
+    };
+
+    const complexPayload = (): FormRequire => {
+      const costPrice = data.costPrice;
+      const salePrice =
+        Number(data.cashPrice) +
+        Number(data.cardPrice) -
+        Number(data.cardPrice) * 0.1;
+      const profit = salePrice - costPrice;
+      return {
+        count: data.count,
+        item: data.item,
+        profit,
+        costPrice,
+        salePrice,
+        type: isTax,
+      };
+    };
+
+    try {
+      //해당 costPrice와 salePrice가 동작해야하는 조건은 무엇인가.
+      const payload =
+        isPaymentState === "default"
+          ? defaultPayload()
+          : isPaymentState === "card"
+          ? cardPayload()
+          : complexPayload();
+
+      /**profit 필드 추가 */
+      // const payload = {
+      //   count: data.count,
+      //   item: data.item,
+      //   profit,
+      //   costPrice,
+      //   salePrice,
+      //   type: isTax,
+      // };
 
       const ledgerResult = await postMutate(payload);
       console.log("🎯ledgerResult", ledgerResult.data[0].id);
@@ -90,14 +135,8 @@ const useInputForm = (): {
         throw new Error("다중 결제 등록 실패");
       }
 
-      // 카드가 선택이 되었을 때
-      if (isTax) {
-        profit = profit - profit * 0.1;
-        console.log("🚑profit", profit);
-      }
-
       // 2. Payment 요청 준비
-      if (isComplexPayment && isTax) {
+      if (isPaymentState === "complex") {
         const paymentPayload: PaymentRequire[] = [
           {
             ledgerId,
