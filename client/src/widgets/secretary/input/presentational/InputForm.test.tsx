@@ -10,15 +10,8 @@ import useInputFormTest from "@/features/secretary/input/model/useInputForm.test
 // import { Dispatch, SetStateAction } from "react";
 
 const InputForm = (): React.ReactElement => {
-  const {
-    setTax,
-    register,
-    handleSubmit,
-    errors,
-    onSubmit,
-    isChecked,
-    setChecked,
-  } = useInputFormTest();
+  const { setTax, register, handleSubmit, errors, onSubmit, isTax } =
+    useInputFormTest();
 
   return (
     <InputFormItemTest
@@ -33,8 +26,7 @@ const InputForm = (): React.ReactElement => {
       register={register}
       errors={errors}
       setTax={setTax}
-      isChecked={isChecked}
-      setChecked={setChecked}
+      isTax={isTax}
       // isComplexPayment={isComplexPayment}
     />
   );
