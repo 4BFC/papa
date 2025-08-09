@@ -2,7 +2,7 @@ import { Calendar } from "lucide-react";
 // import { Dispatch, SetStateAction } from "react";
 // import useSecretaryState from "../model/useSecretaryState";
 import useSecretaryContext from "@/views/secretary/context/useSecretaryContext";
-import { getPaymentValidation } from "@/features/secretary/model/usePaymentValidation";
+import { getPaymentValidation } from "@/features/secretary/model/paymentValidation";
 const Header = ({ today }: { today: string }): React.ReactElement => {
   const {
     isSelectedDate,

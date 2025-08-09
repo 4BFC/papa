@@ -7,7 +7,7 @@ import type {
   UseFormHandleSubmit,
 } from "react-hook-form";
 import { FormRequire } from "@/shared/types";
-import { getPaymentValidation } from "@/features/secretary/model/usePaymentValidation";
+import { getPaymentValidation } from "@/features/secretary/model/paymentValidation";
 import useSecretaryContext from "@/views/secretary/context/useSecretaryContext";
 
 const InputFormItem = ({
