@@ -6,6 +6,7 @@ import {
   PaymentRequire,
   LedgerDataResponse,
 } from "@/shared/types";
+import { PaymentType } from "@/shared/types/secretary/paymentType";
 
 // export interface SecretaryContextType {
 //   isSelectedDate: string | null;
@@ -28,6 +29,10 @@ export interface SecretaryContextStateType {
   isComplexPayment: boolean;
   setComplexPayment: React.Dispatch<React.SetStateAction<boolean>>;
   scrollRef: React.RefObject<HTMLDivElement | null>;
+  isTax: boolean;
+  setTax: React.Dispatch<React.SetStateAction<boolean>>;
+  isPaymentState: PaymentType;
+  setPaymentState: React.Dispatch<React.SetStateAction<PaymentType>>;
 }
 
 export interface SecretaryContextFetchType {

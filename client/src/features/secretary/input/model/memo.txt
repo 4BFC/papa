@@ -1,0 +1,180 @@
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  UseFormRegister,
+  FieldErrors,
+  UseFormHandleSubmit,
+  useForm,
+  SubmitHandler,
+} from "react-hook-form";
+import { FormRequire, PaymentRequire } from "@/shared/types";
+import useSecretaryContext from "@/views/secretary/context/useSecretaryContext";
+
+const useInputForm = (): {
+  isTax: boolean;
+  setTax: Dispatch<SetStateAction<boolean>>;
+  register: UseFormRegister<FormRequire>;
+  handleSubmit: UseFormHandleSubmit<FormRequire>;
+  errors: FieldErrors<FormRequire>;
+  onSubmit: SubmitHandler<FormRequire>;
+  isChecked: boolean;
+  setChecked: Dispatch<SetStateAction<boolean>>;
+} => {
+  const [isTax, setTax] = useState<boolean>(false);
+  const [isChecked, setChecked] = useState<boolean>(false);
+  const {
+    getFetchData,
+    paymentFetchData,
+    paymentPostMutate,
+    postMutate,
+    scrollRef,
+    isComplexPayment,
+  } = useSecretaryContext();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FormRequire>();
+
+  useEffect(() => {
+    if (!isComplexPayment) {
+      setTax(false);
+      setChecked(false);
+    } else {
+      setTax(true);
+      setChecked(true);
+    }
+  }, [isComplexPayment, setTax, setChecked]);
+
+  useEffect(() => {
+    console.log("🎯isTax", isTax);
+    console.log("🎯isComplexPayment", isComplexPayment);
+  }, [isTax, isComplexPayment]);
+
+  const onSubmit: SubmitHandler<FormRequire> = async (data) => {
+    try {
+      console.log("🎯현재 상태:", { isTax, isComplexPayment, isChecked });
+      const costPrice = data.costPrice * data.count; //원가 금액
+      const salePrice = data.salePrice * data.count; //판매 금액
+      let profit = salePrice - costPrice; //이익 금
+      let salePriceTax = salePrice;
+
+      console.log("🎯profit", profit);
+
+      if (!isComplexPayment) {
+        if (isTax) {
+          // profit = profit - profit * 0.1;
+          console.log("🎯profit - isTax", profit);
+          salePriceTax =
+            Number(data.cardPrice) -
+            Number(data.cardPrice) * 0.1 +
+            Number(data.cashPrice);
+          console.log("🎯salePriceTax", salePriceTax);
+          profit = salePriceTax - costPrice;
+        }
+      }
+
+      /**profit 필드 추가 */
+      let payload = {
+        count: data.count,
+        item: data.item,
+        profit,
+        costPrice,
+        salePrice: salePriceTax,
+        type: isTax,
+      };
+
+      const ledgerResult = await postMutate(payload);
+      console.log("🎯isChecked", isChecked);
+
+      // 2. Payment 요청 준비, 복합결제 사용 시
+      // payment에서 isTax 내부 계산이 동작하지 않는다.
+      if (isComplexPayment) {
+        console.log("🎯isComplexPayment");
+        /**profit 필드 추가 */
+        payload = {
+          count: data.count,
+          item: data.item,
+          profit,
+          costPrice,
+          salePrice: salePriceTax,
+          type: isTax,
+        };
+        if (isTax) {
+          // profit = profit - profit * 0.1;
+          console.log("🎯complexPayment profit", profit);
+          salePriceTax =
+            Number(data.cardPrice) -
+            Number(data.cardPrice) * 0.1 +
+            Number(data.cashPrice);
+          console.log("🎯salePriceTax", salePriceTax);
+          profit = salePriceTax - costPrice;
+        }
+
+        const ledgerId = ledgerResult.data[0].id;
+        console.log("🎯ledgerResult", ledgerResult.data[0].id);
+
+        // Payment 요청 실패시 throw Error
+        if (!ledgerResult || !ledgerId) {
+          throw new Error("다중 결제 등록 실패");
+        }
+        const paymentPayload: PaymentRequire[] = [
+          {
+            ledgerId,
+            type: "card",
+            price: Number(data.cardPrice),
+            profit: Number(data.cardPrice) - Number(data.cardPrice) * 0.1,
+          },
+          {
+            ledgerId,
+            type: "cash",
+            price: Number(data.cashPrice),
+            profit: Number(data.cashPrice),
+          },
+        ];
+
+        console.log("🎯paymentPayload", paymentPayload);
+        const paymentResult = await paymentPostMutate(paymentPayload);
+        console.log("🎯paymentResult", paymentResult);
+      } //if (isComplexPayment)
+
+      // 이거 왜 있지?
+      await getFetchData();
+      await paymentFetchData();
+
+      reset();
+
+      // 스크롤 함수 분리 필요
+      setTimeout(() => {
+        if (scrollRef.current) {
+          scrollRef.current?.scrollTo({
+            top: scrollRef.current.scrollHeight + 100,
+            behavior: "smooth",
+          });
+          // console.log("🎯scrollRef.current", scrollRef.current);
+        } else {
+          console.log("🎯scrollRef.current is null");
+        }
+      }, 200);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error("예외 타입 Error", String(error));
+        throw error;
+      }
+    }
+  };
+  return {
+    isTax,
+    setTax,
+    register,
+    handleSubmit,
+    errors,
+    onSubmit,
+    isChecked,
+    setChecked,
+  };
+};
+
+export default useInputForm;
