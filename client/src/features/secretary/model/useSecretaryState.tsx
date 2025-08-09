@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { SecretaryContextStateType } from "@/shared/types/secretary/contextType";
-
+import { PaymentType } from "@/shared/types/secretary/paymentType";
 const useSecretaryState = (): SecretaryContextStateType => {
   const [isSelectedDate, setSelectedDate] = useState<string | null>(null);
   const [isDateSlideOpen, setDateSlideOpen] = useState<boolean>(false);

@@ -16,7 +16,7 @@ export const setPaymentValidation = (type: PaymentType): PaymentFlags => {
 export const getPaymentValidation = (
   isTax: boolean,
   isComplexPayment: boolean
-): PaymentFlags => {
+): PaymentType => {
   if (!isTax && !isComplexPayment) return "default";
   if (isTax && !isComplexPayment) return "card";
   if (isTax && isComplexPayment) return "complex";

@@ -6,6 +6,7 @@ import {
   PaymentRequire,
   LedgerDataResponse,
 } from "@/shared/types";
+import { PaymentType } from "@/shared/types/secretary/paymentType";
 
 // export interface SecretaryContextType {
 //   isSelectedDate: string | null;
