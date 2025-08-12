@@ -44,8 +44,6 @@ const InputFormItem = ({
 
   useEffect(() => {
     if (isLoading) {
-      // setHeaderActive(false);
-      // setComplexPayment(false);
     }
   }, [isLoading, setHeaderActive, setComplexPayment]);
 
@@ -76,13 +74,19 @@ const InputFormItem = ({
                     type="checkbox"
                     onClick={(e) => {
                       setTax((prev) => !prev);
+                      // setComplexPayment((prev) => !prev);
                       const checked = e.target.checked;
+                      //Control
                       if (checked) {
-                        // console.log("payment is CARD or COMPLEX");
+                        //true
+                        console.log("??");
                         setPaymentState(getPaymentValidation(true, false));
+                        setComplexPayment(false);
                       } else {
+                        //false
                         console.log("payment is DEFAULT");
                         setPaymentState(getPaymentValidation(false, false));
+                        setComplexPayment(false);
                       }
                     }}
                     {...register("type")}

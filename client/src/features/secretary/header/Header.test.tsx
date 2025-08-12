@@ -1,4 +1,5 @@
 import { Calendar } from "lucide-react";
+import { useEffect } from "react";
 // import { Dispatch, SetStateAction } from "react";
 // import useSecretaryState from "../model/useSecretaryState";
 import useSecretaryContext from "@/views/secretary/context/useSecretaryContext";
@@ -14,6 +15,12 @@ const Header = ({ today }: { today: string }): React.ReactElement => {
     isTax,
     setTax,
   } = useSecretaryContext();
+
+  useEffect(() => {
+    console.log("isComplexPayment", isComplexPayment);
+    console.log("isTax", isTax);
+  }, [isComplexPayment, isTax]);
+
   return (
     <div className="flex w-full justify-center items-center p-5 text-lg font-bold">
       <div className="flex justify-start items-center w-1/3">
@@ -23,7 +30,6 @@ const Header = ({ today }: { today: string }): React.ReactElement => {
           } rounded-full`}
           onClick={() => {
             // 이 로직 구조가 너무 별로임.....
-            // console.log("payment is ONLY COMPLEX");
             const nextComplex = !isComplexPayment;
             const nextTax = nextComplex ? true : false; // 정책: 켜지면 true, 꺼지면 false
 
