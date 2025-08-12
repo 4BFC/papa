@@ -1,11 +1,14 @@
 import { X } from "lucide-react";
 import useSecretaryContext from "@/views/secretary/context/useSecretaryContext";
 import { getUniqueSortedDates } from "@/shared/utils";
+import totalProfit from "@/shared/utils/totalProfit";
+import formatCurrencyData from "@/shared/utils/formatCurrencyData";
 import DateItem from "./DateItem";
 
 const SliderItem = (): React.ReactElement => {
   const { isDateSlideOpen, setDateSlideOpen, setSelectedDate, ledgerData } =
     useSecretaryContext();
+
   return (
     <>
       {isDateSlideOpen && (
@@ -29,14 +32,21 @@ const SliderItem = (): React.ReactElement => {
 
         {ledgerData &&
           getUniqueSortedDates(ledgerData) &&
-          getUniqueSortedDates(ledgerData).map((date) => (
-            <DateItem
-              key={date}
-              date={date}
-              onClickDate={setSelectedDate}
-              onClickSlide={setDateSlideOpen}
-            />
-          ))}
+          getUniqueSortedDates(ledgerData).map((date) => {
+            const items = ledgerData.filter(
+              (el) => el.createdAt.split("T")[0] === date
+            );
+            return (
+              <DateItem
+                key={date}
+                date={date}
+                total={items.length}
+                profit={formatCurrencyData(totalProfit(ledgerData, date))}
+                onClickDate={setSelectedDate}
+                onClickSlide={setDateSlideOpen}
+              />
+            );
+          })}
       </div>
     </>
   );
