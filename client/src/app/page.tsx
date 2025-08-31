@@ -1,3 +1,3 @@
-export default function Home(): ReactElement {
+export default function Home(): React.ReactElement {
   return <div>test</div>;
 }

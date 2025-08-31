@@ -9,7 +9,7 @@ const DateItem = ({
   onClickDate: (date: string) => void;
   onClickSlide: (isOpen: boolean) => void;
   total: number;
-  profit: number;
+  profit: string;
 }): React.ReactElement => {
   return (
     <div

@@ -41,7 +41,10 @@ const SliderItem = (): React.ReactElement => {
                 key={date}
                 date={date}
                 total={items.length}
-                profit={formatCurrencyData(totalProfit(ledgerData, date))}
+                profit={formatCurrencyData(
+                  totalProfit(ledgerData, date),
+                  "ko-KR"
+                )}
                 onClickDate={setSelectedDate}
                 onClickSlide={setDateSlideOpen}
               />
