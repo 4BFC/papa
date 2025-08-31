@@ -78,7 +78,8 @@ const useInputForm = (): {
 
     const cardPayload = (): FormRequire => {
       const costPrice = data.costPrice * data.count;
-      const salePrice = data.salePrice * data.count - data.salePrice * 0.1;
+      const salePrice =
+        data.salePrice * data.count - data.salePrice * data.count * 0.1;
       const profit = salePrice - costPrice;
       return {
         count: data.count,

@@ -1,16 +1,10 @@
-import useLedgerRowState from "@/features/secretary/body/model/useLedgerRowState";
-import DataRowItem from "@/features/secretary/body/ui/DataRowItem";
-import { LedgerModel, PaymentModel } from "@/shared/types";
+import useLedgerRowState from "@/features/secretary/body/model/useLedgerRowState.test";
+import DataRowItem from "@/features/secretary/body/ui/DataRowItem.test";
+import { LedgerModel } from "@/shared/types";
 
-const DataRow = ({
-  data,
-  payment,
-}: {
-  data: LedgerModel;
-  payment: PaymentModel[];
-}): React.ReactElement => {
+const DataRow = ({ data }: { data: LedgerModel }): React.ReactElement => {
   const { cardPayment, cashPayment, isButtonActive, setButtonActive } =
-    useLedgerRowState({ data, payment });
+    useLedgerRowState({ data });
   return (
     <DataRowItem
       data={data}

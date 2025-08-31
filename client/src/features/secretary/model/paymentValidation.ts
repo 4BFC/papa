@@ -10,6 +10,7 @@ const PAYMENT_STATES: Record<PaymentType, PaymentFlags> = {
 };
 
 // 결제 상태에 따라 복합 결제와 카드 결제를 반환하는 코드
+// view
 export const setPaymentValidation = (type: PaymentType): PaymentFlags => {
   return PAYMENT_STATES[type];
 };
